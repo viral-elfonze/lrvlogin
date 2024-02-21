@@ -38,7 +38,7 @@ class AuthController extends Controller
         // Validate state
         $state = $request->session()->pull('oauth2state');
         if (empty($state) || ($state !== $request->input('state'))) {
-            return redirect('/ ');
+            return redirect('/');
         }
 
         // Get access token
