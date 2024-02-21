@@ -52,6 +52,6 @@ class AuthController extends Controller
         $me = $graph->createRequest('GET', '/me')->setReturnType(Model\User::class)->execute();
         dump($me->getDisplayName());
         dd($me);
-        // Use $me->getDisplayName() or other properties for user viral info
+        // Use $me->getDisplayName() or other properties for user viinfo
     }
 }
