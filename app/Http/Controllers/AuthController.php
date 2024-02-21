@@ -49,18 +49,14 @@ class AuthController extends Controller
         $token = $provider->getAccessToken('authorization_code', [
             'code' => $request->input('code'),
         ]);
-        $user = new User();
-
-        $name = $user->data->getDisplayName();
-        $email = $user->data->getUserPrincipalName();
-
-        dd($name,$email);
+        dump($token);
+        dd();
         // Use Microsoft Graph SDK to interact with Microsoft Graph
-        // $graph = new Graph();
-        // $graph->setAccessToken($token->getToken());
-        // $me = $graph->createRequest('GET', '/me')->setReturnType(Model\User::class)->execute();
-        // dump($me->getDisplayName());
-        // dd($me);
+        $graph = new Graph();
+        $graph->setAccessToken($token->getToken());
+        $me = $graph->createRequest('GET', '/me')->setReturnType(Model\User::class)->execute();
+        dump($me->getDisplayName());
+        dd($me);
         // Use $me->getDisplayName() or other properties for user viinfo
     }
 }
