@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\MicrosoftGraphAuthenticate;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Microsoft\Graph\Graph;
+use Microsoft\Graph\Graph as MicrosoftGraph;
 use Microsoft\Graph\Model;
 
 class AuthController extends Controller
@@ -47,13 +49,18 @@ class AuthController extends Controller
         $token = $provider->getAccessToken('authorization_code', [
             'code' => $request->input('code'),
         ]);
+        $user = new User();
 
+        $name = $user->data->getDisplayName();
+        $email = $user->data->getUserPrincipalName();
+
+        dd($name,$email);
         // Use Microsoft Graph SDK to interact with Microsoft Graph
-        $graph = new Graph();
-        $graph->setAccessToken($token->getToken());
-        $me = $graph->createRequest('GET', '/me')->setReturnType(Model\User::class)->execute();
-        dump($me->getDisplayName());
-        dd($me);
+        // $graph = new Graph();
+        // $graph->setAccessToken($token->getToken());
+        // $me = $graph->createRequest('GET', '/me')->setReturnType(Model\User::class)->execute();
+        // dump($me->getDisplayName());
+        // dd($me);
         // Use $me->getDisplayName() or other properties for user viinfo
     }
 }
