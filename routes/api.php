@@ -1,7 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +17,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Authentication
+Route::post('/login', [AuthController::class, 'login']);
+
+// Protected routes
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('/admin', function () {
+        return response()->json(['message' => 'Welcome Admin!']);
+    });
+
+    // Route::resource('users', UserController::class);
+    // Route::resource('roles', RoleController::class);
+    // Route::resource('permissions', PermissionController::class);
 });
+
+
+Route::get('/admin', function () {
+    // Only users with the 'admin' role can access this route
+})->middleware('role:admin');
+
+Route::get('/manage-teams', function () {
+    // Only users with the 'team manager' role can access this route
+})->middleware('role:team manager');
+
+Route::get('/edit-profile', function () {
+    // Only users with the 'user' role and the permission 'edit-profile' can access this route
+})->middleware('role:user', 'permission:edit-profile');
