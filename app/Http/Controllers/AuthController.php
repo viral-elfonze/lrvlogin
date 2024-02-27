@@ -55,9 +55,10 @@ class AuthController extends Controller
         dump($token->getValues());
 
         dump($token->getToken());
+        dd();
         $resourceOwner = $provider->getResourceOwner($token);
         $email = $resourceOwner->getUpn();
-        $name = $resourceOwner->getName();
+        // $name = $resourceOwner->getName();
 
         //create the user if not exists
         $user = User::where('email', $email)->first();
