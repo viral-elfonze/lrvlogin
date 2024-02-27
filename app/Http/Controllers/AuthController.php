@@ -51,6 +51,9 @@ class AuthController extends Controller
         ]);
         dump($token);
         dump($token->getValues());
+        dump($token->getrusage);
+        dump($token->getToken());
+
         dd("test");
         // Use Microsoft Graph SDK to interact with Microsoft Graph
         $graph = new Graph();
