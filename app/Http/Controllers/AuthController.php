@@ -40,7 +40,7 @@ class AuthController extends Controller
 
         // Validate state
         $state = $request->session()->pull('oauth2state');
-        // dump($state);
+        dump($state);
         // dd();
         // if (empty($state) || ($state !== $request->input('state'))) {
         //     return redirect('/');
@@ -51,10 +51,10 @@ class AuthController extends Controller
             'code' => $request->input('code'),
         ]);
 
-        // dump($token);
-        // dump($token->getValues());
+        dump($token);
+        dump($token->getValues());
 
-        // dump($token->getToken());
+        dump($token->getToken());
         $resourceOwner = $provider->getResourceOwner($token);
         $email = $resourceOwner->getUpn();
         $name = $resourceOwner->getName();
