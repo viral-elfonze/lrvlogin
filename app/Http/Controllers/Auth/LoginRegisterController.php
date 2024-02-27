@@ -75,7 +75,6 @@ class LoginRegisterController extends Controller
         // Check email exist
         $user = User::where('email', $request->email)->first();
 
-        $data['before']= Auth::user();
 
         // Check password
         if(!$user || !Hash::check($request->password, $user->password)) {
@@ -91,7 +90,6 @@ class LoginRegisterController extends Controller
 
         auth()->login($user);
 
-        $data['after']= Auth::user();
 
         $response = [
             'status' => 'success',
