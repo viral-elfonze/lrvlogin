@@ -51,7 +51,7 @@ class AuthController extends Controller
         ]);
         dump($token);
         dump($token->getValues());
-        dump($token->getrusage);
+
         dump($token->getToken());
 
         dd("test");
