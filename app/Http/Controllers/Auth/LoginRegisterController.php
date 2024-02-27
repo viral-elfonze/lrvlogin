@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Validator;
 
@@ -74,6 +75,8 @@ class LoginRegisterController extends Controller
         // Check email exist
         $user = User::where('email', $request->email)->first();
 
+        $data['before']= Auth::user();
+
         // Check password
         if(!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
@@ -83,7 +86,12 @@ class LoginRegisterController extends Controller
         }
 
         $data['token'] = $user->createToken($request->email)->plainTextToken;
+
         $data['user'] = $user;
+
+        auth()->login($user);
+
+        $data['after']= Auth::user();
 
         $response = [
             'status' => 'success',
