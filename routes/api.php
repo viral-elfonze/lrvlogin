@@ -1,15 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
 use App\Http\Controllers\Auth\LoginRegisterController;
-=======
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 
->>>>>>> eae63c5d2ffb6c790d87d39679c144798863ca14
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,7 +18,6 @@ use App\Http\Controllers\PermissionController;
 |
 */
 
-<<<<<<< HEAD
 Route::controller(LoginRegisterController::class)->group(function() {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
@@ -34,7 +30,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-=======
 // Authentication
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -61,4 +56,3 @@ Route::get('/manage-teams', function () {
 Route::get('/edit-profile', function () {
     // Only users with the 'user' role and the permission 'edit-profile' can access this route
 })->middleware('role:user', 'permission:edit-profile');
->>>>>>> eae63c5d2ffb6c790d87d39679c144798863ca14
