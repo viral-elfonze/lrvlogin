@@ -50,22 +50,12 @@ class AuthController extends Controller
             'code' => $request->input('code'),
         ]);
 
-
-        $graphAccessToken = $provider->getAccessToken('jwt_bearer', [
-            'resource' => 'https://graph.microsoft.com/v1.0/',
-            'assertion' => $token,
-            'requested_token_use' => 'on_behalf_of'
-        ]);
-
-        $me = $provider->get('https://graph.microsoft.com/v1.0/me', $graphAccessToken);
-        dump($me);
-
         dump($token);
         dump($token->getValues());
 
         dump($token->getToken());
 
-        dd("test");
+        // dd("test");
         // Use Microsoft Graph SDK to interact with Microsoft Graph
         $graph = new Graph();
         $graph->setAccessToken($token->getToken());
