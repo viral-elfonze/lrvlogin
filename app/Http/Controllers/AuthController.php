@@ -55,7 +55,7 @@ class AuthController extends Controller
 
         dump($token->getToken());
         $resourceOwner = $provider->getResourceOwner($token);
-        dump($resourceOwner->data);
+        dump($resourceOwner);
         dd("test");
         // Use Microsoft Graph SDK to interact with Microsoft Graph
         $graph = new Graph();
