@@ -55,8 +55,10 @@ class AuthController extends Controller
         dump($token->getValues());
 
         dump($token->getToken());
-        dd();
+
         $resourceOwner = $provider->getResourceOwner($token);
+        dump($resourceOwner);
+        dd();
         $email = $resourceOwner->getUpn();
         // $name = $resourceOwner->getName();
 
