@@ -49,6 +49,17 @@ class AuthController extends Controller
         $token = $provider->getAccessToken('authorization_code', [
             'code' => $request->input('code'),
         ]);
+
+
+        $graphAccessToken = $provider->getAccessToken('jwt_bearer', [
+            'resource' => 'https://graph.microsoft.com/v1.0/',
+            'assertion' => $token,
+            'requested_token_use' => 'on_behalf_of'
+        ]);
+
+        $me = $provider->get('https://graph.microsoft.com/v1.0/me', $graphAccessToken);
+        dump($me);
+
         dump($token);
         dump($token->getValues());
 
