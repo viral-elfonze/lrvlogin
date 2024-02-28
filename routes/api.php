@@ -33,6 +33,12 @@ Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
     return "asd";
 });
 
+
+Route::middleware('auth:sanctum')->group(function() {
+    Route::post('/user/list', [App\Http\Controllers\UserController::class, 'list'])->name('user.list');
+});
+
+
 // Authentication
 // Route::post('/login', [AuthController::class, 'login']);
 
