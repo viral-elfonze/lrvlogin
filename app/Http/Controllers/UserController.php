@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ImageMaster;
 use App\Models\User;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    protected $imageService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ImageService $imageService)
     {
         $this->middleware('auth');
+        $this->imageService = $imageService;
     }
 
     /**
@@ -47,5 +51,38 @@ class UserController extends Controller
         $items = $query->paginate($request->input('per_page', 10), ['*'], 'page', $page);
 
         return response()->json($items);
+    }
+
+    //image upload example
+    public function uploadImage(Request $request){
+
+        if ($request->hasFile('image')) {
+
+            $file = $request->file('image');
+
+            // Call the saveImage method of the ImageService
+            $imageObj = $this->imageService->saveImage($file,$request->input('module'));
+            dump($imageObj);
+            dump($imageObj->id);
+            // Optionally, save the filename to the database or perform any other operations
+
+            return 'Image uploaded successfully.';
+        }else{
+            dd("2");
+        }
+
+        return 'No image uploaded.';
+    }
+
+    public function getImage(Request $request){
+
+        if ($request->has('image_id')) {
+            $imageDetail = ImageMaster::where('id',$request->input('image_id'))->first();
+            if($imageDetail){
+                return $imageDetail->path."/".$imageDetail->filename;
+            }
+        }else{
+            return 'image not found';
+        }
     }
 }

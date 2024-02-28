@@ -36,6 +36,8 @@ Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function() {
     Route::post('/user/list', [App\Http\Controllers\UserController::class, 'list'])->name('user.list');
+    Route::post('/user/uploadimage', [App\Http\Controllers\UserController::class, 'uploadImage'])->name('user.uploadImage');
+    Route::get('/user/getimage', [App\Http\Controllers\UserController::class, 'getImage'])->name('user.getImage');
 });
 
 
