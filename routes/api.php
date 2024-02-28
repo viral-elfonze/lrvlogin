@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use Illuminate\Http\Client\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,11 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/user/list', [App\Http\Controllers\UserController::class, 'list'])->name('user.list');
     Route::post('/user/uploadimage', [App\Http\Controllers\UserController::class, 'uploadImage'])->name('user.uploadImage');
     Route::get('/user/getimage', [App\Http\Controllers\UserController::class, 'getImage'])->name('user.getImage');
+
+    Route::post('/employee/list', [App\Http\Controllers\EmployeeProfileController::class, 'getEmployeeDetails'])->name('employee.list');
+    Route::post('/employee/store', [App\Http\Controllers\EmployeeProfileController::class, 'saveEmployeeDetail'])->name('employee.store');
+    Route::post('/employee/update', [App\Http\Controllers\EmployeeProfileController::class, 'updateEmployeeDetail'])->name('employee.update');
+    Route::post('/employee/delete', [App\Http\Controllers\EmployeeProfileController::class, 'removeEmployeeDetail'])->name('employee.delete');
 });
 
 
