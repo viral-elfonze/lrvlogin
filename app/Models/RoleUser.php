@@ -5,24 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EmployeeDetails extends Model
+class RoleUser extends Model
 {
     use HasFactory;
 
-    /**
+     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'employee_details';
+    protected $table = 'role_user';
 
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'employee_id', 'employee_code', 'employee_firstname', 'employee_middlename', 'employee_lastname', 'resumelink', 'employement_type', 'startdate', 'enddate', 'location', 'totalexp', 'relevantexp', 'isactive'
+        'id', 'role_id', 'user_id'
     ];
 
     /**

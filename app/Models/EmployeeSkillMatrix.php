@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class EmployeeDetails extends Model
+class EmployeeSkillMatrix extends Model
 {
     use HasFactory;
 
@@ -14,15 +14,15 @@ class EmployeeDetails extends Model
      *
      * @var string
      */
-    protected $table = 'employee_details';
+    protected $table = 'employee_skill_matrix';
 
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'employee_id', 'employee_code', 'employee_firstname', 'employee_middlename', 'employee_lastname', 'resumelink', 'employement_type', 'startdate', 'enddate', 'location', 'totalexp', 'relevantexp', 'isactive'
+        'id', 'skill_id', 'employee_id', 'relevantexp', 'competency'
     ];
 
     /**

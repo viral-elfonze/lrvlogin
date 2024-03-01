@@ -67,12 +67,12 @@ class EmployeeDetailsController extends Controller
     public function saveEmployeeDetail(Request $request)
     {
         $request->validate([
-            'employeefirstname' => 'required',
-            'employeedmiddlename' => 'required',
-            'employeelastname' => 'required',
-            'employeeid' => 'required|unique:employee_profiles',
-            'employeecode' => 'required|unique:employee_profiles',
-            'employementtype' => 'required',
+            'employee_firstname' => 'required',
+            'employee_middlename' => 'required',
+            'employee_lastname' => 'required',
+            'employee_id' => 'required|unique:employee_profiles',
+            'employee_code' => 'required|unique:employee_profiles',
+            'employement_type' => 'required',
             'relevantexp' => 'required',
             'totalexp' => 'required',
             'location' => 'required',
@@ -106,12 +106,12 @@ class EmployeeDetailsController extends Controller
     public function updateEmployeeDetail(Request $request, EmployeeDetails $EmployeeDetails)
     {
         $request->validate([
-            'employeefirstname' => 'required',
-            'employeedmiddlename' => 'required',
-            'employeelastname' => 'required',
-            'employeeid' => 'required|unique:employee_profiles,emp_id,' . $EmployeeDetails->id,
-            'employeecode' => 'required|unique:employee_profiles,emp_code,' . $EmployeeDetails->id,
-            'employementtype' => 'required',
+            'employee_firstname' => 'required',
+            'employee_middlename' => 'required',
+            'employee_lastname' => 'required',
+            'employee_id' => 'required|unique:employee_profiles,emp_id,' . $EmployeeDetails->id,
+            'employee_code' => 'required|unique:employee_profiles,emp_code,' . $EmployeeDetails->id,
+            'employement_type' => 'required',
             'relevantexp' => 'required',
             'totalexp' => 'required',
             'location' => 'required',
@@ -144,10 +144,10 @@ class EmployeeDetailsController extends Controller
     /**
      * Verify employee id is exists or not.
      */
-    public function verifyEmployeeId($employeeId)
+    public function verifyemployee_id($employee_id)
     {
         // Implement logic to check if the employee ID exists in the database
-        $employeeExists = EmployeeDetails::where('employeeid', $employeeId)->exists();
+        $employeeExists = EmployeeDetails::where('employee_id', $employee_id)->exists();
 
         // Return response based on the result
         return response()->json(['employeeexists' => $employeeExists]);
@@ -156,13 +156,13 @@ class EmployeeDetailsController extends Controller
     /**
      * Verify employee code is exists or not.
      */
-    public function verifyEmployeeCode($employeeCode)
+    public function verifyemployee_code($employee_code)
     {
         // Implement logic to check if the employee ID exists in the database
-        $employeeExists = EmployeeDetails::where('employeecode', $employeeCode)->exists();
+        $employeeExists = EmployeeDetails::where('employee_code', $employee_code)->exists();
 
         // Return response based on the result
-        return response()->json(['employeecodeexists' => $employeeExists]);
+        return response()->json(['employee_codeexists' => $employeeExists]);
     }
 
     /**

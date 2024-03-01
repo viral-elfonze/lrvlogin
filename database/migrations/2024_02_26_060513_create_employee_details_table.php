@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employeedetails', function (Blueprint $table) {
-            $table->id('employeeid');
-            $table->string('employeecode')->nullable();
-            $table->string('employeefirstname')->nullable();
-            $table->string('employeedmiddlename')->nullable();
-            $table->string('employeelastname')->nullable();
+        Schema::create('employee_details', function (Blueprint $table) {
+            $table->id('employee_id');
+            $table->string('employee_code')->nullable();
+            $table->string('employee_firstname')->nullable();
+            $table->string('employee_middlename')->nullable();
+            $table->string('employee_lastname')->nullable();
             $table->string('resumelink')->nullable();
-            $table->string('employementtype', 50)->nullable();
+            $table->string('employement_type', 50)->nullable();
             $table->date('startdate')->nullable();
             $table->date('enddate')->nullable();
             $table->string('location', 100)->nullable();
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employeedetails');
+        Schema::dropIfExists('employee_details');
     }
 };
