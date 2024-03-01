@@ -11,7 +11,7 @@ use Validator;
 
 class LoginRegisterController extends Controller
 {
-     /**
+    /**
      * Register a new user.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -25,7 +25,7 @@ class LoginRegisterController extends Controller
             'password' => 'required|string|min:8|confirmed'
         ]);
 
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Validation Error!',
@@ -64,7 +64,7 @@ class LoginRegisterController extends Controller
             'password' => 'required|string'
         ]);
 
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Validation Error!',
@@ -75,13 +75,22 @@ class LoginRegisterController extends Controller
         // Check email exist
         $user = User::where('email', $request->email)->first();
 
-
         // Check password
-        if(!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Invalid credentials'
-                ], 401);
+            ], 401);
+        }
+
+        // Retrieve users with a specific role
+        if ($user) {
+            // Check if the user has any roles
+            if ($user->roles->isNotEmpty()) {
+                foreach ($user->roles as $role) {
+                    $user['roles'] = $role->rolename; // Role's name
+                }
+            }
         }
 
         $data['token'] = $user->createToken($request->email)->plainTextToken;
@@ -89,7 +98,6 @@ class LoginRegisterController extends Controller
         $data['user'] = $user;
 
         auth()->login($user);
-
 
         $response = [
             'status' => 'success',
@@ -112,6 +120,6 @@ class LoginRegisterController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'User is logged out successfully'
-            ], 200);
+        ], 200);
     }
 }

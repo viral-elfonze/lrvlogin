@@ -1,11 +1,13 @@
 <?php
 
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginRegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\EmployeeDetailsController;
+use App\Http\Controllers\Auth\LoginRegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +20,7 @@ use App\Http\Controllers\PermissionController;
 |
 */
 
-Route::controller(LoginRegisterController::class)->group(function() {
+Route::controller(LoginRegisterController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
 });
@@ -35,10 +37,19 @@ Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
 });
 
 
-Route::middleware('auth:sanctum')->group(function() {
-    Route::post('/user/list', [App\Http\Controllers\UserController::class, 'list'])->name('user.list');
-    Route::post('/user/uploadimage', [App\Http\Controllers\UserController::class, 'uploadImage'])->name('user.uploadImage');
-    Route::get('/user/getimage', [App\Http\Controllers\UserController::class, 'getImage'])->name('user.getImage');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
+    Route::post('/user/uploadimage', [UserController::class, 'uploadImage'])->name('user.uploadImage');
+    Route::get('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');
+
+    Route::get('verify-employee/{employeeId}', [EmployeeDetailsController::class, 'verifyEmployeeId'])->name('employee.verify.id');
+    Route::get('verify-employeecode/{employeeCode}', [EmployeeDetailsController::class, 'verifyEmployeeCode'])->name('employee.verify.code');
+    Route::get('/employee/list', [EmployeeDetailsController::class, 'getEmployeeDetails'])->name('employee.list');
+    Route::post('/employee/store', [EmployeeDetailsController::class, 'saveEmployeeDetail'])->name('employee.store');
+    Route::post('/employee/update', [EmployeeDetailsController::class, 'updateEmployeeDetail'])->name('employee.update');
+    Route::post('/employee/delete', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
+
+    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
 });
 
 

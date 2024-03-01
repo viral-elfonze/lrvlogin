@@ -1,11 +1,9 @@
 <?php
-// app/Services/ImageService.php
 
 namespace App\Services;
 
 use App\Models\ImageMaster;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 class ImageService
 {
@@ -22,6 +20,7 @@ class ImageService
         $image->filename = $filename;
         $image->path = $module;
         $image->save();
+
         // Return the filename to be stored in the database or for further processing
         return $image;
     }
