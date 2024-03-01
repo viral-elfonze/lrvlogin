@@ -24,6 +24,7 @@ Route::controller(LoginRegisterController::class)->group(function() {
 });
 
 Route::get('/login/microsoft', [App\Http\Controllers\AuthController::class, 'redirectToMicrosoft'])->name('microsoft.login');
+Route::get('/login/microsoft1', [App\Http\Controllers\AuthController::class, 'redirectToMicrosoft1'])->name('microsoft.login1');
 Route::get('/login/microsoft/callback', [App\Http\Controllers\AuthController::class, 'handleMicrosoftCallback'])->name('microsoft.handleMicrosoftCallback');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

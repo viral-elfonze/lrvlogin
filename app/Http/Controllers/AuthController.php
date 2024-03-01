@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Middleware\MicrosoftGraphAuthenticate;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 use Microsoft\Graph\Graph as MicrosoftGraph;
 use Microsoft\Graph\Model;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -25,6 +26,12 @@ class AuthController extends Controller
         $authUrl = $provider->getAuthorizationUrl();
         session(['oauth2state' => $provider->getState()]);
         return redirect()->away($authUrl);
+    }
+
+    public function redirectToMicrosoft1(){
+        return response('', Response::HTTP_FOUND)
+            ->header('Location', 'https://google.com?token=232232');
+        return "test";
     }
 
     public function handleMicrosoftCallback(Request $request)
@@ -81,6 +88,10 @@ class AuthController extends Controller
             'message' => 'User is logged in successfully.',
             'data' => $data,
         ];
+
+        return response('', Response::HTTP_FOUND)
+        ->header('Location', 'http://localhost:3000/login?token='.$data['token']);
+
 
         return response()->json($response, 200);
 
