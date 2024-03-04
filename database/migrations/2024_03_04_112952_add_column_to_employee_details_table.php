@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('employee_details', function (Blueprint $table) {
-            $table->unsignedBigInteger('employee_image')->nullable();
+            $table->unsignedBigInteger('employee_image');
 
             // Define foreign key constraint
-            $table->foreign('employee_image')->references('employee_image')->on('images_master')
+            $table->foreign('employee_image')->references('id')->on('images_master')
                 ->onUpdate('NO ACTION')
                 ->onDelete('NO ACTION');
         });

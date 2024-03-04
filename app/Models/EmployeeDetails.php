@@ -16,13 +16,15 @@ class EmployeeDetails extends Model
      */
     protected $table = 'employee_details';
 
+    protected $primaryKey = 'employee_id';
+
      /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'employee_id', 'employee_code', 'employee_firstname', 'employee_middlename', 'employee_lastname', 'resumelink', 'employement_type', 'startdate', 'enddate', 'location', 'totalexp', 'relevantexp', 'isactive'
+        'employee_code', 'employee_firstname', 'employee_middlename', 'employee_lastname', 'resumelink', 'employement_type', 'startdate', 'enddate', 'location', 'totalexp', 'relevantexp', 'isactive'
     ];
 
     /**

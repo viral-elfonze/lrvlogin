@@ -7,6 +7,10 @@ use App\Models\Locations;
 use Illuminate\Http\Request;
 use App\Services\ImageService;
 use App\Models\EmployeeDetails;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeDetailsController extends Controller
 {
@@ -50,12 +54,18 @@ class EmployeeDetailsController extends Controller
      */
     public function saveEmployeeImage(Request $request, String $value)
     {
-        $request->validate([
-            'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        if (($value == 'employee_image')) {
+            $request->validate([
+                'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+        } else if (($value == 'resumelink')) {
+            $request->validate([
+                'resumelink' => 'required|mimes:pdf|max:2048',
+            ]);
+        }
 
-        $file = $value == 'employee_image' ? $request->file('employee_image') : $request->file('resumelink');
-        $savedfile = $this->ImageService->saveImage($file);
+        $file = ($value == 'employee_image') ? $request->file('employee_image') : $request->file('resumelink');
+        $savedfile = $this->ImageService->saveImage($file, $value);
 
         // Return success response after saving employee image
         return response()->json(['message' => 'Employee image saved successfully', 'data' => $savedfile]);
@@ -66,7 +76,10 @@ class EmployeeDetailsController extends Controller
      */
     public function saveEmployeeDetail(Request $request)
     {
-        $request->validate([
+        $savedImageFile = '';
+        $savedResume = '';
+
+        $rules = [
             'employee_firstname' => 'required',
             'employee_middlename' => 'required',
             'employee_lastname' => 'required',
@@ -78,85 +91,174 @@ class EmployeeDetailsController extends Controller
             'startdate' => 'required|date',
             'enddate' => 'nullable|date',
             'resumelink' => 'required',
-            'employee_image_id' => 'required',
+            'employee_image' => 'required',
             'isactive' => 'required',
-        ]);
+        ];
 
-        if ($request->hasFile('employee_image_id')) {
-            $savedFile = $this->saveEmployeeImage($request, 'image');
+        // Validate the request data
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 400);
+        } else {
+            if ($request->hasFile('employee_image')) {
+                $savedImageFile = $this->saveEmployeeImage($request, 'employee_image');
+            } else if ($request->hasFile('resumelink')) {
+                $savedResume = $this->saveEmployeeImage($request, 'resumelink');
+            }
+
+            $employee = new EmployeeDetails();
+            $employee->employee_firstname = $request->input('employee_firstname');
+            $employee->employee_middlename = $request->input('employee_middlename');
+            $employee->employee_lastname = $request->input('employee_lastname');
+            $employee->employee_code = $request->input('employee_code');
+            $employee->employement_type = $request->input('employement_type');
+            $employee->relevantexp = $request->input('relevantexp');
+            $employee->totalexp = $request->input('totalexp');
+            $employee->location = $request->input('location');
+            $employee->startdate = $request->input('startdate');
+            $employee->enddate = $request->input('enddate');
+            $employee->resumelink = ($savedResume) ? $savedResume->getData()->data->id : null;
+            $employee->employee_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null;
+            $employee->isactive = $request->input('isactive');
+            $employee->save();
+
+            // Return success response after saving employee data
+            return response()->json(['message' => 'Employee details saved successfully']);
         }
-
-        if ($request->hasFile('resume')) {
-            $savedFile = $this->saveEmployeeImage($request, 'resume');
-        }
-
-        $employee = new EmployeeDetails();
-        $employee->employee_firstname = $request->input('employee_firstname');
-        $employee->employee_middlename = $request->input('employee_middlename');
-        $employee->employee_lastname = $request->input('employee_lastname');
-        $employee->employee_code = $request->input('employee_code');
-        $employee->employement_type = $request->input('employement_type');
-        $employee->relevantexp = $request->input('relevantexp');
-        $employee->totalexp = $request->input('totalexp');
-        $employee->location = $request->input('location');
-        $employee->startdate = $request->input('startdate');
-        $employee->enddate = $request->input('enddate');
-        $employee->resume = $request->input('resume');
-        $employee->employee_image = $savedFile;
-        $employee->isactive = $request->input('isactive');
-        $employee->save();
-
-        // Return success response after saving employee data
-        return response()->json(['message' => 'Employee details saved successfully']);
     }
 
     /**
      * Display the specified resource.
      */
-    public function showEmployeeDetail(EmployeeDetails $EmployeeDetails)
+    public function showEmployeeDetail($id)
     {
-        return response()->json(['employeeData' => $EmployeeDetails]);
+        // Find the employee record by ID
+        $employeeDetails = EmployeeDetails::find($id);
+
+        return response()->json([['message' => 'Employee details fetched successfully'], 'employeeData' => $employeeDetails], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function updateEmployeeDetail(Request $request, EmployeeDetails $EmployeeDetails)
+    public function updateEmployeeDetail(Request $request, $employeeId)
     {
-        $request->validate([
-            'employee_firstname' => 'required',
-            'employee_middlename' => 'required',
-            'employee_lastname' => 'required',
-            'employee_id' => 'required|unique:employee_details,emp_id,' . $EmployeeDetails->id,
-            'employee_code' => 'required|unique:employee_details,emp_code,' . $EmployeeDetails->id,
-            'employement_type' => 'required',
-            'relevantexp' => 'required',
-            'totalexp' => 'required',
-            'location' => 'required',
-            'startdate' => 'required|date',
-            'enddate' => 'nullable|date',
-            'resumelink' => 'nullable',
-            'isactive' => 'required',
-        ]);
+        try {
+            // Find employee by employee ID column
+            $employee = EmployeeDetails::where('employee_id', $employeeId)->first();
 
-        if ($request->hasFile('image')) {
-            $this->saveEmployeeImage($request, 'image');
+            $rules = [
+                'employee_firstname' => 'required',
+                'employee_middlename' => 'required',
+                'employee_lastname' => 'required',
+                'employee_code' => 'required',
+                'employement_type' => 'required',
+                'relevantexp' => 'required',
+                'totalexp' => 'required',
+                'location' => 'required',
+                'startdate' => 'required|date',
+                'enddate' => 'nullable|date',
+                'resumelink' => 'required',
+                'employee_image' => 'required',
+                'isactive' => 'required',
+            ];
+
+            // Validate the request data
+            $validator = Validator::make($request->all(), $rules);
+
+            // If validation fails, return error response
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation Error',
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // If employee not found, return error response
+            if (!$employee) {
+                return response()->json(['error' => 'Employee not found'], 404);
+            }
+
+            // Update employee details
+            $employee->employee_firstname = $request->input('employee_firstname');
+            $employee->employee_middlename = $request->input('employee_middlename');
+            $employee->employee_lastname = $request->input('employee_lastname');
+            $employee->employee_code = $request->input('employee_code');
+            $employee->employement_type = $request->input('employement_type');
+            $employee->relevantexp = $request->input('relevantexp');
+            $employee->totalexp = $request->input('totalexp');
+            $employee->location = $request->input('location');
+            $employee->startdate = Carbon::parse($request->input('startdate'))->format('Y-m-d H:i:s');
+            $employee->enddate = Carbon::parse($request->input('enddate'))->format('Y-m-d H:i:s');
+            $employee->isactive = $request->input('isactive');
+
+            // Check if a new image is uploaded
+            if ($request->hasFile('employee_image')) {
+                // Delete existing image (if any)
+                if ($employee->employee_image) {
+                    // Delete existing image file
+                    Storage::delete('images/' . $employee->employee_image);
+                }
+
+                // Save new image
+                $employee->employee_image = $this->saveEmployeeImage($request, 'employee_image')->getData()->data->id;
+            } else if ($request->hasFile('resumelink')) {
+                // Delete existing image (if any)
+                if ($employee->resumelink) {
+                    // Delete existing image file
+                    Storage::delete('resumelink/' . $employee->resumelink);
+                }
+
+                // Save new resume
+                $employee->resumelink = $this->saveEmployeeImage($request, 'resumelink')->getData()->data->id;
+            }
+
+            // // Save the updated employee details
+            $employee->update();
+
+            // Return success response
+            return response()->json(['message' => 'Employee details updated successfully'], 200);
+        } catch (Exception $e) {
+            dd($e->getMessage());
         }
-
-        $EmployeeDetails->update($request->all());
-
-        // Return the image path or URL
-        return response()->json(['message' => 'Employee details update successfully.']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function removeEmployeeDetail(EmployeeDetails $EmployeeDetails)
+    public function removeEmployeeDetail($id)
     {
-        $EmployeeDetails->delete();
+        // Find employee by employee ID column
+        $employee = EmployeeDetails::where('employee_id', $id)->first();
 
-        return response()->json(null, 204);
+        // If employee not found, return error response
+        if (!$employee) {
+            return response()->json(['error' => 'Employee not found'], 404);
+        }
+
+        // Delete associated image (if any)
+        if ($employee->employee_image) {
+            Storage::delete('images/' . $employee->employee_image);
+        }
+
+        // Delete associated resume (if any)
+        if ($employee->resume) {
+            // Assuming the resume is stored in a storage path
+            Storage::delete('resumelink/' . $employee->resumelink);
+        }
+
+        // Delete employee record
+        $employee->delete();
+
+        // Return success response
+        return response()->json(['message' => 'Employee details deleted successfully'], 200);
     }
 
     /**

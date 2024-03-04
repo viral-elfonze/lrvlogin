@@ -12,6 +12,6 @@ class EmployeeDetailsSeeder extends Seeder
      */
     public function run(): void
     {
-        ModelsEmployeeDetails::create(['employee_code' => 'ET1208', 'employee_firstname'  => 'Dixita', 'employee_middlename'  => 'Bhupendrabhai', 'employee_lastname'  => 'Pande', 'resumelink' => '', 'employement_type' => 'Full Stack Developer', 'startdate' => '2023-02-28', 'enddate' => null, 'location' => 'Ahmedabad', 'totalexp' => '6', 'relevantexp' => '3', 'isactive' => 1]);
+        ModelsEmployeeDetails::create(['employee_code' => 'ET1208', 'employee_firstname'  => 'Dixita', 'employee_middlename'  => 'Bhupendrabhai', 'employee_lastname'  => 'Pande', 'resumelink' => '', 'employement_type' => 'Full Stack Developer', 'startdate' => '2023-02-28', 'enddate' => null, 'location' => 'Ahmedabad', 'totalexp' => '6', 'relevantexp' => '3', 'employee_image' => 1, 'isactive' => 1]);
     }
 }

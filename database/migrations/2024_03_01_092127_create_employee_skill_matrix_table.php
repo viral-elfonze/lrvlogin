@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('employee_skill_matrix', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('skill_id')->nullable();
-            $table->unsignedBigInteger('employee_id')->nullable();
+            $table->unsignedBigInteger('skill_id');
+            $table->unsignedBigInteger('employee_id');
             $table->integer('relevantexp')->nullable();
             $table->integer('competency')->nullable();
             $table->timestamps();

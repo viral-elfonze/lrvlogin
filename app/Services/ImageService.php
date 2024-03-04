@@ -7,13 +7,13 @@ use Illuminate\Http\UploadedFile;
 
 class ImageService
 {
-    public function saveImage(UploadedFile $file,String $module='default')
+    public function saveImage(UploadedFile $file, String $module = 'default')
     {
         // Generate a unique filename
         $filename = uniqid() . '_' . $file->getClientOriginalName();
 
         // Store the image in the storage/app/public/images directory
-        $file->storeAs( env('IMAGE_PATH').$module, $filename);
+        $file->storeAs(env('IMAGE_PATH') . $module, $filename);
 
         //save into table
         $image = new ImageMaster();
