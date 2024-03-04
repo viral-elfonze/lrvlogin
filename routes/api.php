@@ -44,7 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');
 
     Route::get('verify-employee/{employee_id}', [EmployeeDetailsController::class, 'verifyemployee_id'])->name('employee.verify.id');
-    Route::get('verify-employee_code/{employee_code}', [EmployeeDetailsController::class, 'verifyemployee_code'])->name('employee.verify.code');
+    Route::get('verify-employee-code/{employee_code}', [EmployeeDetailsController::class, 'verifyemployee_code'])->name('employee.verify.code');
     Route::get('/employee/list', [EmployeeDetailsController::class, 'getEmployeeDetails'])->name('employee.list');
     Route::post('/employee/store', [EmployeeDetailsController::class, 'saveEmployeeDetail'])->name('employee.store');
     Route::post('/employee/update', [EmployeeDetailsController::class, 'updateEmployeeDetail'])->name('employee.update');

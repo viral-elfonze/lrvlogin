@@ -46,19 +46,19 @@ class EmployeeDetailsController extends Controller
     }
 
     /**
-     * Store a newly created employee image.
+     * Store a newly created employee image or employee resume.
      */
-    public function saveEmployeeImage(Request $request)
+    public function saveEmployeeImage(Request $request, String $value)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $file = $request->file('image');
-        $this->ImageService->saveImage($file);
+        $file = $value == 'employee_image' ? $request->file('employee_image') : $request->file('resumelink');
+        $savedfile = $this->ImageService->saveImage($file);
 
         // Return success response after saving employee image
-        return response()->json(['message' => 'Employee image saved successfully']);
+        return response()->json(['message' => 'Employee image saved successfully', 'data' => $savedfile]);
     }
 
     /**
@@ -70,23 +70,41 @@ class EmployeeDetailsController extends Controller
             'employee_firstname' => 'required',
             'employee_middlename' => 'required',
             'employee_lastname' => 'required',
-            'employee_id' => 'required|unique:employee_profiles',
-            'employee_code' => 'required|unique:employee_profiles',
+            'employee_code' => 'required|unique:employee_details',
             'employement_type' => 'required',
             'relevantexp' => 'required',
             'totalexp' => 'required',
             'location' => 'required',
             'startdate' => 'required|date',
             'enddate' => 'nullable|date',
-            'resumelink' => 'nullable',
+            'resumelink' => 'required',
+            'employee_image_id' => 'required',
             'isactive' => 'required',
         ]);
 
-        if ($request->hasFile('image')) {
-            $this->saveEmployeeImage($request);
+        if ($request->hasFile('employee_image_id')) {
+            $savedFile = $this->saveEmployeeImage($request, 'image');
         }
 
-        EmployeeDetails::create($request->all());
+        if ($request->hasFile('resume')) {
+            $savedFile = $this->saveEmployeeImage($request, 'resume');
+        }
+
+        $employee = new EmployeeDetails();
+        $employee->employee_firstname = $request->input('employee_firstname');
+        $employee->employee_middlename = $request->input('employee_middlename');
+        $employee->employee_lastname = $request->input('employee_lastname');
+        $employee->employee_code = $request->input('employee_code');
+        $employee->employement_type = $request->input('employement_type');
+        $employee->relevantexp = $request->input('relevantexp');
+        $employee->totalexp = $request->input('totalexp');
+        $employee->location = $request->input('location');
+        $employee->startdate = $request->input('startdate');
+        $employee->enddate = $request->input('enddate');
+        $employee->resume = $request->input('resume');
+        $employee->employee_image = $savedFile;
+        $employee->isactive = $request->input('isactive');
+        $employee->save();
 
         // Return success response after saving employee data
         return response()->json(['message' => 'Employee details saved successfully']);
@@ -109,8 +127,8 @@ class EmployeeDetailsController extends Controller
             'employee_firstname' => 'required',
             'employee_middlename' => 'required',
             'employee_lastname' => 'required',
-            'employee_id' => 'required|unique:employee_profiles,emp_id,' . $EmployeeDetails->id,
-            'employee_code' => 'required|unique:employee_profiles,emp_code,' . $EmployeeDetails->id,
+            'employee_id' => 'required|unique:employee_details,emp_id,' . $EmployeeDetails->id,
+            'employee_code' => 'required|unique:employee_details,emp_code,' . $EmployeeDetails->id,
             'employement_type' => 'required',
             'relevantexp' => 'required',
             'totalexp' => 'required',
@@ -122,7 +140,7 @@ class EmployeeDetailsController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $this->saveEmployeeImage($request);
+            $this->saveEmployeeImage($request, 'image');
         }
 
         $EmployeeDetails->update($request->all());
