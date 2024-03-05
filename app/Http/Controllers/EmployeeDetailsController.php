@@ -54,16 +54,6 @@ class EmployeeDetailsController extends Controller
      */
     public function saveEmployeeImage(Request $request, String $value)
     {
-        if (($value == 'employee_image')) {
-            $request->validate([
-                'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
-        } else if (($value == 'resumelink')) {
-            $request->validate([
-                'resumelink' => 'required|mimes:pdf|max:2048',
-            ]);
-        }
-
         $file = ($value == 'employee_image') ? $request->file('employee_image') : $request->file('resumelink');
         $savedfile = $this->ImageService->saveImage($file, $value);
 
@@ -90,8 +80,8 @@ class EmployeeDetailsController extends Controller
             'location' => 'required',
             'startdate' => 'required|date',
             'enddate' => 'nullable|date',
-            'resumelink' => 'required',
-            'employee_image' => 'required',
+            'resumelink' => 'required|mimes:pdf|max:2048',
+            'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'isactive' => 'required',
         ];
 
@@ -138,10 +128,18 @@ class EmployeeDetailsController extends Controller
      */
     public function showEmployeeDetail($id)
     {
-        // Find the employee record by ID
-        $employeeDetails = EmployeeDetails::find($id);
+        try {
+            // Find the employee record by ID
+            $employeeDetails = EmployeeDetails::where('employee_id', $id)->first();
 
-        return response()->json([['message' => 'Employee details fetched successfully'], 'employeeData' => $employeeDetails], 200);
+            if (!$employeeDetails) {
+                return response()->json(['error' => 'Employee not found'], 404);
+            }
+
+            return response()->json([['message' => 'Employee details fetched successfully'], 'employeeData' => $employeeDetails], 200);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
     }
 
     /**
@@ -235,30 +233,34 @@ class EmployeeDetailsController extends Controller
      */
     public function removeEmployeeDetail($id)
     {
-        // Find employee by employee ID column
-        $employee = EmployeeDetails::where('employee_id', $id)->first();
+        try {
+            // Find employee by employee ID column
+            $employee = EmployeeDetails::where('employee_id', $id)->first();
 
-        // If employee not found, return error response
-        if (!$employee) {
-            return response()->json(['error' => 'Employee not found'], 404);
+            // If employee not found, return error response
+            if (!$employee) {
+                return response()->json(['error' => 'Employee not found'], 404);
+            }
+
+            // Delete associated image (if any)
+            if ($employee->employee_image) {
+                Storage::delete('images/' . $employee->employee_image);
+            }
+
+            // Delete associated resume (if any)
+            if ($employee->resume) {
+                // Assuming the resume is stored in a storage path
+                Storage::delete('resumelink/' . $employee->resumelink);
+            }
+
+            // Delete employee record
+            $employee->delete();
+
+            // Return success response
+            return response()->json(['message' => 'Employee details deleted successfully'], 200);
+        } catch (Exception $e) {
+            dd($e->getMessage());
         }
-
-        // Delete associated image (if any)
-        if ($employee->employee_image) {
-            Storage::delete('images/' . $employee->employee_image);
-        }
-
-        // Delete associated resume (if any)
-        if ($employee->resume) {
-            // Assuming the resume is stored in a storage path
-            Storage::delete('resumelink/' . $employee->resumelink);
-        }
-
-        // Delete employee record
-        $employee->delete();
-
-        // Return success response
-        return response()->json(['message' => 'Employee details deleted successfully'], 200);
     }
 
     /**

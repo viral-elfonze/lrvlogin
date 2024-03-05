@@ -47,9 +47,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('verify-employee-code/{employee_code}', [EmployeeDetailsController::class, 'verifyemployee_code'])->name('employee.verify.code');
     Route::get('/employee/list', [EmployeeDetailsController::class, 'getEmployeeDetails'])->name('employee.list');
     Route::post('/employee/store', [EmployeeDetailsController::class, 'saveEmployeeDetail'])->name('employee.store');
+    Route::get('/employee/show/2', [EmployeeDetailsController::class, 'showEmployeeDetail'])->name('employee.show');
     Route::post('/employee/update/{employee_id}', [EmployeeDetailsController::class, 'updateEmployeeDetail'])->name('employee.update');
     Route::delete('/employee/delete/{employee_id}', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
 
+    Route::post('/employee/skills', [EmployeeDetailsController::class, 'getEmployeeSkills'])->name('employee.skills');
     Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
 
     Route::get('/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
