@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
 });
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
     Route::post('/user/uploadimage', [UserController::class, 'uploadImage'])->name('user.uploadImage');
     Route::get('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');
@@ -52,14 +52,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/employee/delete/{employee_id}', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
 
     Route::get('/employee/skills', [EmployeeDetailsController::class, 'getEmployeeSkills'])->name('employee.skills');
-
+    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
 
     Route::get('/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
 
 });
 
-Route::middleware('cors')->group(function () {
-    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
+Route::middleware()->group(function () {
+
 });
 
 
