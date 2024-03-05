@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
 });
 
 
-Route::middleware(['cors','auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum','cors'])->group(function () {
     Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
     Route::post('/user/uploadimage', [UserController::class, 'uploadImage'])->name('user.uploadImage');
     Route::get('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');
@@ -58,9 +58,6 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
 
 });
 
-Route::middleware()->group(function () {
-
-});
 
 
 // Authentication
