@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class PostController extends Controller
 {
     protected $imageService;
     /**
@@ -28,10 +28,13 @@ class UserController extends Controller
      */
     public function index()
     {
+
+        dd("post index");
         return view('home');
     }
     public function logout()
     {
+        dd("post logout");
         return view('home');
     }
 
