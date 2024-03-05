@@ -52,10 +52,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/employee/delete/{employee_id}', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
 
     Route::get('/employee/skills', [EmployeeDetailsController::class, 'getEmployeeSkills'])->name('employee.skills');
-    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
+
 
     Route::get('/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
 
+});
+
+Route::middleware('cors')->group(function () {
+    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
 });
 
 
