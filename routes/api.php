@@ -41,19 +41,17 @@ Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
 
 
 
-Route::middleware(['cors','auth:sanctum'])->group(function () {
-    Route::get('/userdetails', [UserController::class, 'userdetails'])->name('user.userdetails');
-    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
-    Route::get('/user/logout', [UserController::class, 'logout'])->name('user.lougout');
-
-});
+// Route::middleware(['cors','auth:sanctum'])->group(function () {
+// });
 Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::middleware('cors')->group(function () {
+Route::middleware(['cors','auth:sanctum'])->group(function () {
 
-
+    Route::get('/userdetails', [UserController::class, 'userdetails'])->name('user.userdetails');
+    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
+    Route::get('/user/logout', [UserController::class, 'logout'])->name('user.lougout');
     Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
     Route::post('/user/uploadimage', [UserController::class, 'uploadImage'])->name('user.uploadImage');
     Route::get('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');
