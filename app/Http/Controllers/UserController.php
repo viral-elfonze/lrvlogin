@@ -6,6 +6,7 @@ use App\Models\ImageMaster;
 use App\Models\User;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -32,7 +33,7 @@ class UserController extends Controller
     }
     public function logout()
     {
-        dd("tes");
+        dd(Auth::user());
         return view('home');
     }
 
