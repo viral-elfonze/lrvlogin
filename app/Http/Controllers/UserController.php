@@ -31,9 +31,10 @@ class UserController extends Controller
     {
         return view('home');
     }
-    public function logout()
+    public function logout(Request $request)
     {
-        dd(Auth::user());
+
+        dd($request->user()->token());
         return view('home');
     }
 
