@@ -290,7 +290,7 @@ class EmployeeDetailsController extends Controller
 
             // If employee not found, return error response
             if (!$employee) {
-                return response()->json(['error' => 'Employee not found'], 404);
+                return response()->json(['status' => 'error', 'message' => 'Employee not found']);
             }
 
             // Delete associated image (if any)

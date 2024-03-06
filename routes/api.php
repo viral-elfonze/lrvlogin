@@ -56,6 +56,7 @@ Route::middleware('cors')->group(function () {
     Route::post('/user/uploadimage', [UserController::class, 'uploadImage'])->name('user.uploadImage');
     Route::get('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');
 
+    Route::get('/employee/skills', [EmployeeDetailsController::class, 'getEmployeeSkills'])->name('employee.skills');
     Route::get('verify-employee/{employee_id}', [EmployeeDetailsController::class, 'verifyemployee_id'])->name('employee.verify.id');
     Route::get('verify-employee-code/{employee_code}', [EmployeeDetailsController::class, 'verifyemployee_code'])->name('employee.verify.code');
     Route::get('/employee/list', [EmployeeDetailsController::class, 'getEmployeeDetails'])->name('employee.list');
@@ -64,10 +65,13 @@ Route::middleware('cors')->group(function () {
     Route::post('/employee/update/{employee_id}', [EmployeeDetailsController::class, 'updateEmployeeDetail'])->name('employee.update');
     Route::delete('/employee/delete/{employee_id}', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
 
-    Route::get('/employee/skills', [EmployeeDetailsController::class, 'getEmployeeSkills'])->name('employee.skills');
+    Route::get('/all/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
+    Route::post('/employeeskill/store', [EmployeeSkillMatrixController::class, 'saveEmployeeSkillMatrix'])->name('employee.skill.store');
+    Route::get('/employeeskill/show/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'showEmployeeSkillMatrix'])->name('employee.skill.show');
+    Route::post('/employeeskill/update/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'updateEmployeeSkillMatrix'])->name('employee.skill.update');
+    Route::delete('/employeeskill/delete/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'removeEmployeeSkillMatrix'])->name('employee.skill.delete');
 
-
-    Route::get('/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
+    Route::get('/my/skills/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'getMySkills'])->name('my.skills');
 
 });
 
