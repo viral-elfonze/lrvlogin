@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::middleware('cors')->group(function () {
+Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
 });
 
