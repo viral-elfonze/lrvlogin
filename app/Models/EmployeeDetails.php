@@ -24,7 +24,7 @@ class EmployeeDetails extends Model
      * @var array
      */
     protected $fillable = [
-        'employee_code', 'employee_firstname', 'employee_middlename', 'employee_lastname', 'resumelink', 'employement_type', 'startdate', 'enddate', 'location', 'totalexp', 'relevantexp', 'isactive'
+        'employee_code', 'user_id', 'employee_firstname', 'employee_middlename', 'employee_lastname', 'resumelink', 'employement_type', 'startdate', 'enddate', 'location', 'totalexp', 'relevantexp', 'isactive'
     ];
 
     /**
