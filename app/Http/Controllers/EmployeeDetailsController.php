@@ -110,7 +110,7 @@ class EmployeeDetailsController extends Controller
 
             $rules = [
                 'employee_firstname' => 'required',
-                'employee_middlename' => 'required',
+                'employee_middlename' => 'nullable',
                 'employee_lastname' => 'required',
                 'employee_code' => 'required|unique:employee_details',
                 'employement_type' => 'required',
@@ -175,7 +175,7 @@ class EmployeeDetailsController extends Controller
     {
         try {
             // Find the employee record by ID
-            $employeeDetails = EmployeeDetails::with('imageMaster')->where('employee_id', $id)->get();
+            $employeeDetails = EmployeeDetails::with('imageMaster')->where('user_id', $id)->get();
 
             if (!$employeeDetails) {
                 return response()->json(['status' => 'error', 'message' => 'Employee details not found']);
@@ -201,7 +201,7 @@ class EmployeeDetailsController extends Controller
 
             $rules = [
                 'employee_firstname' => 'required',
-                'employee_middlename' => 'required',
+                'employee_middlename' => 'nullable',
                 'employee_lastname' => 'required',
                 'employee_code' => 'required',
                 'employement_type' => 'required',
