@@ -34,4 +34,9 @@ class EmployeeSkillMatrix extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public function skills()
+    {
+        return $this->belongsTo(Skills::class, 'skill_id');
+    }
 }

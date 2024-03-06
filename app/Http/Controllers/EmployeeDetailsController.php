@@ -150,8 +150,8 @@ class EmployeeDetailsController extends Controller
                 $employee->relevantexp = $request->input('relevantexp');
                 $employee->totalexp = $request->input('totalexp');
                 $employee->location = $request->input('location');
-                $employee->startdate = $request->input('startdate');
-                $employee->enddate = $request->input('enddate');
+                $employee->startdate = Carbon::parse($request->input('startdate'))->format('dd-mm-YYYY H:i:s');
+                $employee->enddate = Carbon::parse($request->input('enddate'))->format('dd-mm-YYYY H:i:s');
                 $employee->resumelink = ($savedResume) ? $savedResume->getData()->data->id : null;
                 $employee->employee_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null;
                 $employee->isactive = $request->input('isactive');
@@ -178,7 +178,7 @@ class EmployeeDetailsController extends Controller
             $employeeDetails = EmployeeDetails::where('employee_id', $id)->first();
 
             if (!$employeeDetails) {
-                return response()->json(['status' => 'error', 'message' => 'Employee not found']);
+                return response()->json(['status' => 'error', 'message' => 'Employee details not found']);
             }
 
             return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $employeeDetails]);
@@ -241,8 +241,8 @@ class EmployeeDetailsController extends Controller
             $employee->relevantexp = $request->input('relevantexp');
             $employee->totalexp = $request->input('totalexp');
             $employee->location = $request->input('location');
-            $employee->startdate = Carbon::parse($request->input('startdate'))->format('Y-m-d H:i:s');
-            $employee->enddate = Carbon::parse($request->input('enddate'))->format('Y-m-d H:i:s');
+            $employee->startdate = Carbon::parse($request->input('startdate'))->format('dd-mm-YYYY H:i:s');
+            $employee->enddate = Carbon::parse($request->input('enddate'))->format('dd-mm-YYYY H:i:s');
             $employee->isactive = $request->input('isactive');
 
             // Check if a new image is uploaded

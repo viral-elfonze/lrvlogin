@@ -175,7 +175,7 @@ class EmployeeSkillMatrixController extends Controller
     public function getMySkills($id)
     {
         try {
-            $employeeSkillMatrix = EmployeeSkillMatrix::find($id)->first();
+            $employeeSkillMatrix = EmployeeSkillMatrix::with('skills')->where('employee_id', $id)->first();
 
             if (!$employeeSkillMatrix) {
                 return response()->json(['status' => 'error', 'message' => 'Employee skill data not found']);
