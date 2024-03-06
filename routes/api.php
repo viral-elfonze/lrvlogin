@@ -27,9 +27,9 @@ Route::get('/login/microsoft', [App\Http\Controllers\AuthController::class, 'red
 Route::get('/login/microsoft1', [App\Http\Controllers\AuthController::class, 'redirectToMicrosoft1'])->name('microsoft.login1');
 Route::get('/login/microsoft/callback', [App\Http\Controllers\AuthController::class, 'handleMicrosoftCallback'])->name('microsoft.handleMicrosoftCallback');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return ($request->user())?"auth":"unauth";
-});
+// Route::middleware()->get('/user', function (Request $request) {
+//     return ($request->user())?$request->user():"unauth";
+// });
 Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
     return "asd";
 });
@@ -41,17 +41,17 @@ Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
 
 
 
-Route::middleware('auth')->group(function () {
-    Route::post('/userdetails', [UserController::class, 'logout'])->name('user.lougout');
-});
+// Route::middleware(['cors','auth:sanctum'])->group(function () {
+// });
 Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::middleware('cors')->group(function () {
-    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
+Route::middleware(['cors','auth:sanctum'])->group(function () {
 
-    Route::post('/user/logout', [UserController::class, 'logout'])->name('user.lougout');
+    Route::get('/userdetails', [UserController::class, 'userdetails'])->name('user.userdetails');
+    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
+    Route::get('/user/logout', [UserController::class, 'logout'])->name('user.lougout');
     Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
     Route::post('/user/uploadimage', [UserController::class, 'uploadImage'])->name('user.uploadImage');
     Route::get('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');

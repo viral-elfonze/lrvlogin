@@ -39,9 +39,13 @@ class AuthLoginRegisterController extends Controller
         ]);
 
         $data['token'] = $user->createToken($request->email)->plainTextToken;
-        $data['user'] = $user;
 
-        $response = [
+         // $data['token'] = $user->createToken($request->email)->plainTextToken;
+        $user->api_token =$data['token'];
+        $user->save();
+
+        $data['user'] = $user;
+       $response = [
             'status' => 'success',
             'message' => 'User is created successfully.',
             'data' => $data,
@@ -83,11 +87,14 @@ class AuthLoginRegisterController extends Controller
         }
 
         $data['token'] = $user->createToken($request->email)->plainTextToken;
+        // $data['token'] = $user->createToken($request->email)->plainTextToken;
+        $user->api_token =$data['token'];
+        $user->save();
         $data['user'] = $user;
 
         $response = [
             'status' => 'success',
-            'message' => 'User is logged in successfully.',
+            'message' => 'User is logged in successfully1.',
             'data' => $data,
         ];
 

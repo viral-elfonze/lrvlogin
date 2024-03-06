@@ -82,7 +82,9 @@ class LoginRegisterController extends Controller
                 'message' => 'Invalid credentials'
             ], 401);
         }
-
+        $data['token'] = $user->createToken($request->email)->plainTextToken;
+        $user->api_token =$data['token'];
+        $user->save();
         // Retrieve users with a specific role
         if ($user) {
             // Check if the user has any roles
@@ -93,7 +95,7 @@ class LoginRegisterController extends Controller
             }
         }
 
-        $data['token'] = $user->createToken($request->email)->plainTextToken;
+
 
         $data['user'] = $user;
 
@@ -101,7 +103,7 @@ class LoginRegisterController extends Controller
 
         $response = [
             'status' => 'success',
-            'message' => 'User is logged in successfully.',
+            'message' => 'User is logged in successfully2.',
             'data' => $data,
         ];
 

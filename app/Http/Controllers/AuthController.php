@@ -85,7 +85,7 @@ class AuthController extends Controller
 
         $response = [
             'status' => 'success',
-            'message' => 'User is logged in successfully.',
+            'message' => 'User is logged in successfully3.',
             'data' => $data,
         ];
 
