@@ -48,6 +48,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/userdetails', [UserController::class, 'logout'])->name('user.lougout');
 });
 Route::middleware('auth:sanctum')->group(function () {
+
+});
+
+Route::middleware('cors')->group(function () {
+    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
+
     Route::post('/user/logout', [UserController::class, 'logout'])->name('user.lougout');
     Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
     Route::post('/user/uploadimage', [UserController::class, 'uploadImage'])->name('user.uploadImage');
@@ -66,10 +72,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
 
-});
-
-Route::middleware('cors')->group(function () {
-    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
 });
 
 
