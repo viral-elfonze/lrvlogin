@@ -175,7 +175,7 @@ class EmployeeDetailsController extends Controller
     {
         try {
             // Find the employee record by ID
-            $employeeDetails = EmployeeDetails::where('employee_id', $id)->first();
+            $employeeDetails = EmployeeDetails::with('imageMaster')->where('employee_id', $id)->get();
 
             if (!$employeeDetails) {
                 return response()->json(['status' => 'error', 'message' => 'Employee details not found']);

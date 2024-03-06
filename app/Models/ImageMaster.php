@@ -22,4 +22,9 @@ class ImageMaster extends Model
         'filename',
         'path',
     ];
+
+    public function employeeDetails()
+    {
+        return $this->hasMany(EmployeeDetails::class);
+    }
 }

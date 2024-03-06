@@ -36,4 +36,9 @@ class EmployeeDetails extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public function imageMaster()
+    {
+        return $this->belongsTo(ImageMaster::class);
+    }
 }
