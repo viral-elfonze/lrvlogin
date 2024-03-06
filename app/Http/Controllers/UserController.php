@@ -56,9 +56,13 @@ class UserController extends Controller
     }
     public function logout(Request $request)
     {
-
-        dd($request->user()->token());
-        return view('home');
+        auth()->user()->tokens()->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User is logged out successfully'
+            ], 200);
+        // dd($request->user()->token());
+        // return view('home');
     }
 
     public function list(Request $request)
