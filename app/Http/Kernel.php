@@ -79,6 +79,7 @@ class Kernel extends HttpKernel
         'test' => \App\Http\Middleware\test::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        'check.token' => \App\Http\Middleware\CheckTokenValidity::class,
         // Other middleware entries...
     ];
 

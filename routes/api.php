@@ -27,9 +27,9 @@ Route::get('/login/microsoft', [App\Http\Controllers\AuthController::class, 'red
 Route::get('/login/microsoft1', [App\Http\Controllers\AuthController::class, 'redirectToMicrosoft1'])->name('microsoft.login1');
 Route::get('/login/microsoft/callback', [App\Http\Controllers\AuthController::class, 'handleMicrosoftCallback'])->name('microsoft.handleMicrosoftCallback');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return ($request->user())?"auth":"unauth";
-});
+// Route::middleware()->get('/user', function (Request $request) {
+//     return ($request->user())?$request->user():"unauth";
+// });
 Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
     return "asd";
 });
@@ -41,8 +41,8 @@ Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
 
 
 
-Route::middleware('auth')->group(function () {
-    Route::post('/userdetails', [UserController::class, 'logout'])->name('user.lougout');
+Route::middleware(['cors','auth:sanctum'])->group(function () {
+    Route::get('/userdetails', [UserController::class, 'userdetails'])->name('user.userdetails');
 });
 Route::middleware('auth:sanctum')->group(function () {
 

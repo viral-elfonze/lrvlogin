@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function __construct(ImageService $imageService)
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
         $this->imageService = $imageService;
     }
 
@@ -30,6 +30,29 @@ class UserController extends Controller
     public function index()
     {
         return view('home');
+    }
+    public function userdetails(){
+
+       if(Auth::user()){
+        $user = User::find(Auth::user()->id);
+       }
+        $data['user'] = $user;
+        if ($user->roles->isNotEmpty()) {
+            foreach ($user->roles as $role) {
+                $user['roles'] = $role->rolename; // Role's name
+            }
+        }
+
+        $response = [
+            'status' => 'success',
+            'message' => 'User details.',
+            'data' => $data,
+        ];
+
+        return response()->json($response, 200);
+
+
+        //     return "userdetails";
     }
     public function logout(Request $request)
     {
