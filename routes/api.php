@@ -43,13 +43,14 @@ Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
 
 Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::get('/userdetails', [UserController::class, 'userdetails'])->name('user.userdetails');
+    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
+
 });
 Route::middleware('auth:sanctum')->group(function () {
 
 });
 
 Route::middleware('cors')->group(function () {
-    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
 
     Route::post('/user/logout', [UserController::class, 'logout'])->name('user.lougout');
     Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
