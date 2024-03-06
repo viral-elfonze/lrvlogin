@@ -28,14 +28,30 @@ Route::get('/login/microsoft1', [App\Http\Controllers\AuthController::class, 're
 Route::get('/login/microsoft/callback', [App\Http\Controllers\AuthController::class, 'handleMicrosoftCallback'])->name('microsoft.handleMicrosoftCallback');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    return ($request->user())?"auth":"unauth";
 });
 Route::middleware('auth:sanctum')->get('/user1', function (Request $request) {
     return "asd";
 });
 
 
+
+
+
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::post('/userdetails', [UserController::class, 'logout'])->name('user.lougout');
+});
 Route::middleware('auth:sanctum')->group(function () {
+
+});
+
+Route::middleware('cors')->group(function () {
+    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
+
+    Route::post('/user/logout', [UserController::class, 'logout'])->name('user.lougout');
     Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
     Route::post('/user/uploadimage', [UserController::class, 'uploadImage'])->name('user.uploadImage');
     Route::get('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');
@@ -48,8 +64,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/employee/update/{employee_id}', [EmployeeDetailsController::class, 'updateEmployeeDetail'])->name('employee.update');
     Route::delete('/employee/delete/{employee_id}', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
 
-    Route::post('/employee/skills', [EmployeeDetailsController::class, 'getEmployeeSkills'])->name('employee.skills');
-    Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
+    Route::get('/employee/skills', [EmployeeDetailsController::class, 'getEmployeeSkills'])->name('employee.skills');
+
 
     Route::get('/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
 

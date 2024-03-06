@@ -18,8 +18,15 @@ class EmployeeDetailsController extends Controller
 
     public function __construct(ImageService $ImageService)
     {
+        $this->middleware('cors');
         $this->ImageService = $ImageService;
     }
+    // public function __construct(ImageService $imageService)
+    // {
+    //     $this->middleware('auth');
+    //     $this->imageService = $imageService;
+    // }
+
 
     /**
      * Display a listing of the resource.

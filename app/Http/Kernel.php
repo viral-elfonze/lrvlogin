@@ -21,6 +21,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\Cors::class,//cors added here
+        \App\Http\Middleware\CorsMiddleware::class,
     ];
 
     /**
@@ -41,7 +43,10 @@ class Kernel extends HttpKernel
         'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\CorsMiddleware::class,
+             \App\Http\Middleware\CorsMiddleware::class,
         ],
     ];
 
@@ -64,5 +69,17 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'test1' => \App\Http\Middleware\test::class,
+        'cors' => \App\Http\Middleware\CorsMiddleware::class,
     ];
+    protected $routeMiddleware = [
+        // Other middleware entries...
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'cors' => \App\Http\Middleware\CorsMiddleware::class,
+        'test' => \App\Http\Middleware\test::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        // Other middleware entries...
+    ];
+
 }

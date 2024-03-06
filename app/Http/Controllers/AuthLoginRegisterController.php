@@ -102,6 +102,7 @@ class AuthLoginRegisterController extends Controller
      */
     public function logout(Request $request)
     {
+        dd("asdf");
         auth()->user()->tokens()->delete();
         return response()->json([
             'status' => 'success',
