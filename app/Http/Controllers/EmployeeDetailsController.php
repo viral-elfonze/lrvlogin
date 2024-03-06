@@ -117,8 +117,8 @@ class EmployeeDetailsController extends Controller
                 'relevantexp' => 'required|integer|min:0',
                 'totalexp' => 'required|integer|min:0',
                 'location' => 'required',
-                'startdate' => 'required|date_format:dd-mm-YYYY',
-                'enddate' => 'nullable|date_format:dd-mm-YYYY|after_or_equal:startdate',
+                'startdate' => 'required',
+                'enddate' => 'nullable',
                 'resumelink' => 'required|mimes:pdf|max:2048',
                 'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'isactive' => 'required|boolean',
@@ -150,8 +150,8 @@ class EmployeeDetailsController extends Controller
                 $employee->relevantexp = $request->input('relevantexp');
                 $employee->totalexp = $request->input('totalexp');
                 $employee->location = $request->input('location');
-                $employee->startdate = Carbon::parse($request->input('startdate'))->format('dd-mm-YYYY H:i:s');
-                $employee->enddate = Carbon::parse($request->input('enddate'))->format('dd-mm-YYYY H:i:s');
+                $employee->startdate = $request->input('startdate');
+                $employee->enddate = $request->input('enddate');
                 $employee->resumelink = ($savedResume) ? $savedResume->getData()->data->id : null;
                 $employee->employee_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null;
                 $employee->isactive = $request->input('isactive');
@@ -208,8 +208,8 @@ class EmployeeDetailsController extends Controller
                 'relevantexp' => 'required|integer|min:0',
                 'totalexp' => 'required|integer|min:0',
                 'location' => 'required',
-                'startdate' => 'required|date_format:dd-mm-YYYY',
-                'enddate' => 'nullable|date_format:dd-mm-YYYY|after_or_equal:startdate',
+                'startdate' => 'required',
+                'enddate' => 'nullable',
                 'resumelink' => 'required|mimes:pdf|max:2048',
                 'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'isactive' => 'required|boolean',
@@ -241,8 +241,8 @@ class EmployeeDetailsController extends Controller
             $employee->relevantexp = $request->input('relevantexp');
             $employee->totalexp = $request->input('totalexp');
             $employee->location = $request->input('location');
-            $employee->startdate = Carbon::parse($request->input('startdate'))->format('dd-mm-YYYY H:i:s');
-            $employee->enddate = Carbon::parse($request->input('enddate'))->format('dd-mm-YYYY H:i:s');
+            $employee->startdate = $request->input('startdate');
+            $employee->enddate = $request->input('enddate');
             $employee->isactive = $request->input('isactive');
 
             // Check if a new image is uploaded
