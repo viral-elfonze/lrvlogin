@@ -1,11 +1,8 @@
 <?php
 
-use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\EmployeeDetailsController;
 use App\Http\Controllers\Auth\LoginRegisterController;
 use App\Http\Controllers\EmployeeSkillMatrixController;
@@ -47,7 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('verify-employee-code/{employee_code}', [EmployeeDetailsController::class, 'verifyemployee_code'])->name('employee.verify.code');
     Route::get('/employee/list', [EmployeeDetailsController::class, 'getEmployeeDetails'])->name('employee.list');
     Route::post('/employee/store', [EmployeeDetailsController::class, 'saveEmployeeDetail'])->name('employee.store');
-    Route::get('/employee/show/2', [EmployeeDetailsController::class, 'showEmployeeDetail'])->name('employee.show');
+    Route::get('/employee/show/{employee_id}', [EmployeeDetailsController::class, 'showEmployeeDetail'])->name('employee.show');
     Route::post('/employee/update/{employee_id}', [EmployeeDetailsController::class, 'updateEmployeeDetail'])->name('employee.update');
     Route::delete('/employee/delete/{employee_id}', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
 

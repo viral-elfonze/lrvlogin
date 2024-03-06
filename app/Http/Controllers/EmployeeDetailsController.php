@@ -26,13 +26,29 @@ class EmployeeDetailsController extends Controller
      */
     public function getEmployeeDetails()
     {
-        $employeesData = EmployeeDetails::all();
+        try {
+            $employeesData = EmployeeDetails::all();
 
-        // Return JSON response with a message
-        return response()->json([
-            'message' => 'Employees data retrieved successfully.',
-            'data' => $employeesData,
-        ]);
+            //If employee data not found
+            if (!$employeesData) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Employees data not found.',
+                    'data' => $employeesData,
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Employees data retrieved successfully.',
+                'data' => $employeesData
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -40,13 +56,28 @@ class EmployeeDetailsController extends Controller
      */
     public function getEmployeeSkills()
     {
-        $skillsData = Skills::all();
+        try {
+            $skillsData = Skills::all();
 
-        // Return JSON response with a message
-        return response()->json([
-            'message' => 'Employees skills data retrieved successfully.',
-            'data' => $skillsData,
-        ]);
+            if (!$skillsData) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Employee skills data not found.',
+                    'data' => $skillsData,
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Employee skills data retrieved successfully.',
+                'data' => $skillsData,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -58,7 +89,7 @@ class EmployeeDetailsController extends Controller
         $savedfile = $this->ImageService->saveImage($file, $value);
 
         // Return success response after saving employee image
-        return response()->json(['message' => 'Employee image saved successfully', 'data' => $savedfile]);
+        return response()->json(['status' => 'success', 'message' => 'Employee image saved successfully', 'data' => $savedfile]);
     }
 
     /**
@@ -66,60 +97,67 @@ class EmployeeDetailsController extends Controller
      */
     public function saveEmployeeDetail(Request $request)
     {
-        $savedImageFile = '';
-        $savedResume = '';
+        try {
+            $savedImageFile = '';
+            $savedResume = '';
 
-        $rules = [
-            'employee_firstname' => 'required',
-            'employee_middlename' => 'required',
-            'employee_lastname' => 'required',
-            'employee_code' => 'required|unique:employee_details',
-            'employement_type' => 'required',
-            'relevantexp' => 'required',
-            'totalexp' => 'required',
-            'location' => 'required',
-            'startdate' => 'required|date',
-            'enddate' => 'nullable|date',
-            'resumelink' => 'required|mimes:pdf|max:2048',
-            'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'isactive' => 'required',
-        ];
+            $rules = [
+                'employee_firstname' => 'required',
+                'employee_middlename' => 'required',
+                'employee_lastname' => 'required',
+                'employee_code' => 'required|unique:employee_details',
+                'employement_type' => 'required',
+                'relevantexp' => 'required|integer|min:0',
+                'totalexp' => 'required|integer|min:0',
+                'location' => 'required',
+                'startdate' => 'required|date_format:dd-mm-YYYY',
+                'enddate' => 'nullable|date_format:dd-mm-YYYY|after_or_equal:startdate',
+                'resumelink' => 'required|mimes:pdf|max:2048',
+                'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'isactive' => 'required|boolean',
+            ];
 
-        // Validate the request data
-        $validator = Validator::make($request->all(), $rules);
+            // Validate the request data
+            $validator = Validator::make($request->all(), $rules);
 
-        // Check if validation fails
-        if ($validator->fails()) {
+            // Check if validation fails
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation Error',
+                    'data' => $validator->errors(),
+                ]);
+            } else {
+                if ($request->hasFile('employee_image')) {
+                    $savedImageFile = $this->saveEmployeeImage($request, 'employee_image');
+                } else if ($request->hasFile('resumelink')) {
+                    $savedResume = $this->saveEmployeeImage($request, 'resumelink');
+                }
+
+                $employee = new EmployeeDetails();
+                $employee->employee_firstname = $request->input('employee_firstname');
+                $employee->employee_middlename = $request->input('employee_middlename');
+                $employee->employee_lastname = $request->input('employee_lastname');
+                $employee->employee_code = $request->input('employee_code');
+                $employee->employement_type = $request->input('employement_type');
+                $employee->relevantexp = $request->input('relevantexp');
+                $employee->totalexp = $request->input('totalexp');
+                $employee->location = $request->input('location');
+                $employee->startdate = $request->input('startdate');
+                $employee->enddate = $request->input('enddate');
+                $employee->resumelink = ($savedResume) ? $savedResume->getData()->data->id : null;
+                $employee->employee_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null;
+                $employee->isactive = $request->input('isactive');
+                $employee->save();
+
+                // Return success response after saving employee data
+                return response()->json(['status' => 'success', 'message' => 'Employee details saved successfully']);
+            }
+        } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation Error',
-                'errors' => $validator->errors(),
-            ], 400);
-        } else {
-            if ($request->hasFile('employee_image')) {
-                $savedImageFile = $this->saveEmployeeImage($request, 'employee_image');
-            } else if ($request->hasFile('resumelink')) {
-                $savedResume = $this->saveEmployeeImage($request, 'resumelink');
-            }
-
-            $employee = new EmployeeDetails();
-            $employee->employee_firstname = $request->input('employee_firstname');
-            $employee->employee_middlename = $request->input('employee_middlename');
-            $employee->employee_lastname = $request->input('employee_lastname');
-            $employee->employee_code = $request->input('employee_code');
-            $employee->employement_type = $request->input('employement_type');
-            $employee->relevantexp = $request->input('relevantexp');
-            $employee->totalexp = $request->input('totalexp');
-            $employee->location = $request->input('location');
-            $employee->startdate = $request->input('startdate');
-            $employee->enddate = $request->input('enddate');
-            $employee->resumelink = ($savedResume) ? $savedResume->getData()->data->id : null;
-            $employee->employee_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null;
-            $employee->isactive = $request->input('isactive');
-            $employee->save();
-
-            // Return success response after saving employee data
-            return response()->json(['message' => 'Employee details saved successfully']);
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
@@ -133,12 +171,15 @@ class EmployeeDetailsController extends Controller
             $employeeDetails = EmployeeDetails::where('employee_id', $id)->first();
 
             if (!$employeeDetails) {
-                return response()->json(['error' => 'Employee not found'], 404);
+                return response()->json(['status' => 'error', 'message' => 'Employee not found']);
             }
 
-            return response()->json([['message' => 'Employee details fetched successfully'], 'employeeData' => $employeeDetails], 200);
+            return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $employeeDetails]);
         } catch (Exception $e) {
-            dd($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
@@ -157,14 +198,14 @@ class EmployeeDetailsController extends Controller
                 'employee_lastname' => 'required',
                 'employee_code' => 'required',
                 'employement_type' => 'required',
-                'relevantexp' => 'required',
-                'totalexp' => 'required',
+                'relevantexp' => 'required|integer|min:0',
+                'totalexp' => 'required|integer|min:0',
                 'location' => 'required',
-                'startdate' => 'required|date',
-                'enddate' => 'nullable|date',
-                'resumelink' => 'required',
-                'employee_image' => 'required',
-                'isactive' => 'required',
+                'startdate' => 'required|date_format:dd-mm-YYYY',
+                'enddate' => 'nullable|date_format:dd-mm-YYYY|after_or_equal:startdate',
+                'resumelink' => 'required|mimes:pdf|max:2048',
+                'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'isactive' => 'required|boolean',
             ];
 
             // Validate the request data
@@ -175,13 +216,13 @@ class EmployeeDetailsController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Validation Error',
-                    'errors' => $validator->errors(),
-                ], 400);
+                    'data' => $validator->errors(),
+                ]);
             }
 
             // If employee not found, return error response
             if (!$employee) {
-                return response()->json(['error' => 'Employee not found'], 404);
+                return response()->json(['status' => 'error', 'message' => 'Employee not found']);
             }
 
             // Update employee details
@@ -222,9 +263,12 @@ class EmployeeDetailsController extends Controller
             $employee->update();
 
             // Return success response
-            return response()->json(['message' => 'Employee details updated successfully'], 200);
+            return response()->json(['status' => 'error', 'message' => 'Employee details updated successfully']);
         } catch (Exception $e) {
-            dd($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
@@ -257,9 +301,12 @@ class EmployeeDetailsController extends Controller
             $employee->delete();
 
             // Return success response
-            return response()->json(['message' => 'Employee details deleted successfully'], 200);
+            return response()->json(['status' => 'success', 'message' => 'Employee details deleted successfully']);
         } catch (Exception $e) {
-            dd($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
@@ -268,11 +315,18 @@ class EmployeeDetailsController extends Controller
      */
     public function verifyemployee_id($employee_id)
     {
-        // Implement logic to check if the employee ID exists in the database
-        $employeeExists = EmployeeDetails::where('employee_id', $employee_id)->exists();
+        try {
+            // Implement logic to check if the employee ID exists in the database
+            $employeeExists = EmployeeDetails::where('employee_id', $employee_id)->exists();
 
-        // Return response based on the result
-        return response()->json(['employeeexists' => $employeeExists]);
+            // Return response based on the result
+            return response()->json(['status' => 'success', 'employee_exists' => $employeeExists]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -280,11 +334,18 @@ class EmployeeDetailsController extends Controller
      */
     public function verifyemployee_code($employee_code)
     {
-        // Implement logic to check if the employee ID exists in the database
-        $employeeExists = EmployeeDetails::where('employee_code', $employee_code)->exists();
+        try {
+            // Implement logic to check if the employee ID exists in the database
+            $employeeExists = EmployeeDetails::where('employee_code', $employee_code)->exists();
 
-        // Return response based on the result
-        return response()->json(['employee_codeexists' => $employeeExists]);
+            // Return response based on the result
+            return response()->json(['status' => 'success', 'employee_code_exists' => $employeeExists]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -292,12 +353,25 @@ class EmployeeDetailsController extends Controller
      */
     public function getLocations()
     {
-        $location = Locations::all();
+        try {
+            $locations = Locations::all();
 
-        // Return JSON response with a message
-        return response()->json([
-            'message' => 'Locations retrieved successfully.',
-            'data' => $location,
-        ]);
+            // If locations not found, return error response
+            if (!$locations) {
+                return response()->json(['status' => 'error', 'message' => 'Locations not found']);
+            }
+
+            // Return JSON response with a message
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Locations retrieved successfully.',
+                'data' => $locations,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }
