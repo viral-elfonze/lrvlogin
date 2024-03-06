@@ -32,6 +32,7 @@ class UserController extends Controller
     }
     public function logout()
     {
+        dd("tes");
         return view('home');
     }
 
