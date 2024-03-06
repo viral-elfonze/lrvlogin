@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('employee_details', function (Blueprint $table) {
             $table->id('employee_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('employee_code')->nullable();
             $table->string('employee_firstname')->nullable();
             $table->string('employee_middlename')->nullable();
@@ -26,6 +27,10 @@ return new class extends Migration
             $table->integer('relevantexp')->nullable();
             $table->boolean('isactive')->default(false);
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('NO ACTION')
+                ->onDelete('NO ACTION');
         });
     }
 
