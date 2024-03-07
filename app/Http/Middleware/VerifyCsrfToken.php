@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         //
         '/api/locations',
+        'https://lrvlogin.kilter.fun/public/api/employee/store',
 
     ];
 }
