@@ -26,10 +26,10 @@ class ImageService
         return $image;
     }
 
-    public function getImage($filename, $module = 'default')
+    public function getImage($filename)
     {
         // Get the path to the image in the storage/app/public/images directory
-        $path = env('IMAGE_PATH') . $module . '/' . $filename;
+        $path = env('IMAGE_PATH') . $filename;
 
         // Check if the file exists
         if (Storage::exists($path)) {
