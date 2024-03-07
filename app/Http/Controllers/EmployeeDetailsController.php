@@ -190,7 +190,7 @@ class EmployeeDetailsController extends Controller
                 $data[0]['employee_image'] = $path;
             }
 
-            return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $employeeDetails]);
+            return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $data]);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
