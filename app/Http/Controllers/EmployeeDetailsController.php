@@ -187,7 +187,7 @@ class EmployeeDetailsController extends Controller
             // Check if "data" key exists and is not empty
             if (isset($data['data']) && !empty($data['data'])) {
                 // Get the first employee's image value
-                $employeeImageValue = $data['data'][0]['employee_image'];
+                $employeeImageValue = $data['data']['employee_image'];
                 $data['data'][0]['employee_image'] = app(PostController::class)->getImage($employeeDetails['employee_image']);
 
                 // Print or use the value as needed
