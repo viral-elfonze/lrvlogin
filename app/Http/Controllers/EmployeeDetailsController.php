@@ -184,6 +184,7 @@ class EmployeeDetailsController extends Controller
             // Decode the JSON data
             $data = json_decode($employeeDetails, true);
 
+            dd($data);
             // Check if "data" key exists and is not empty
             if (isset($data['data']) && !empty($data['data'])) {
                 // Get the first employee's image value
