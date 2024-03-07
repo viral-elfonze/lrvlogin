@@ -188,7 +188,9 @@ class EmployeeDetailsController extends Controller
             if (isset($data['data']) && !empty($data['data'])) {
                 // Get the first employee's image value
                 $employeeImageValue = $data['data']['employee_image'];
-                $data['data'][0]['employee_image'] = app(PostController::class)->getImage($employeeDetails['employee_image']);
+                // Print or use the value as needed
+                echo "Employee Image Value: " . $employeeImageValue;
+                $data['data']['employee_image'] = app(PostController::class)->getImage($employeeDetails['employee_image']);
 
                 // Print or use the value as needed
                 echo "Employee Image Value: " . $employeeImageValue;
