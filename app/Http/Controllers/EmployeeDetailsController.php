@@ -186,12 +186,6 @@ class EmployeeDetailsController extends Controller
 
             if (isset($data) && !empty($data)) {
                 $data[0]['employee_image'] = app(PostController::class)->getImage($data[0]['employee_image']);
-
-                // Print or use the value as needed
-                echo "Employee Image Value: " . $data;
-            } else {
-                // Handle the case where "data" key is missing or empty
-                echo "No employee data found";
             }
 
             return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $employeeDetails]);
