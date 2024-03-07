@@ -184,6 +184,7 @@ class EmployeeDetailsController extends Controller
             // Decode the JSON data
             $data = json_decode($employeeDetails, true);
 
+            dd(app(PostController::class)->getImage($data[0]['employee_image']));
             if (isset($data) && !empty($data)) {
                 $data[0]['employee_image'] = app(PostController::class)->getImage($data[0]['employee_image']);
             }

@@ -86,7 +86,6 @@ class PostController extends Controller
     {
         if ($id) {
             $imageDetail = ImageMaster::where('id', $id)->first();
-            dd($imageDetail);
             if ($imageDetail) {
                 return $imageDetail->path . "/" . $imageDetail->filename;
             }
