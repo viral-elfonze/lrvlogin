@@ -184,9 +184,8 @@ class EmployeeDetailsController extends Controller
             // Decode the JSON data
             $data = json_decode($employeeDetails, true);
 
-            // Check if "data" key exists and is not empty
             if (isset($data) && !empty($data)) {
-                $data['employee_image'] = app(PostController::class)->getImage($data['employee_image']);
+                $data[0]['employee_image'] = app(PostController::class)->getImage($data[0]['employee_image']);
 
                 // Print or use the value as needed
                 echo "Employee Image Value: " . $data;
