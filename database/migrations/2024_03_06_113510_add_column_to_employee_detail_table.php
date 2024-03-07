@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('employee_detail', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');
+        // Schema::table('employee_details', function (Blueprint $table) {
+        //     $table->unsignedBigInteger('user_id');
 
-            // Define foreign key constraint
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onUpdate('NO ACTION')
-                ->onDelete('NO ACTION');
-        });
+        //     // Define foreign key constraint
+        //     $table->foreign('user_id')->references('id')->on('users')
+        //         ->onUpdate('NO ACTION')
+        //         ->onDelete('NO ACTION');
+        // });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->longText('api_token')->after('remeber_token')->nullable();
+            $table->longText('api_token')->nullable();
         });
     }
 
