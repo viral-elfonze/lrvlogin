@@ -181,6 +181,10 @@ class EmployeeDetailsController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'Employee details not found']);
             }
 
+            if ($employeeDetails['employee_image']) {
+                $employeeDetails['employee_image'] = app(PostController::class)->getImage($employeeDetails['employee_image']);
+            }
+
             return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $employeeDetails]);
         } catch (Exception $e) {
             return response()->json([

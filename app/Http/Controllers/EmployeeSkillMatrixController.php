@@ -198,15 +198,15 @@ class EmployeeSkillMatrixController extends Controller
     public function getEmployeeSkillMatrix(Request $request)
     {
         // Start with a query to retrieve all employees kill matrix
-        $employeesskills = EmployeeSkillMatrix::query();
+        $employeesSkills = EmployeeSkillMatrix::query();
 
         // Apply filters if provided in the request
         if ($request->has('skill_id')) {
-            $employeesskills->where('skill_id', $request->skill_id);
+            $employeesSkills->where('skill_id', $request->skill_id);
         }
 
         // Retrieve the filtered employees data
-        $employees = $employeesskills->get();
+        $employees = $employeesSkills->get();
 
         // Return JSON response with a message
         return response()->json([

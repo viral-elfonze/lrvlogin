@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ImageMaster;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ImageService
 {
@@ -23,5 +24,18 @@ class ImageService
 
         // Return the filename to be stored in the database or for further processing
         return $image;
+    }
+
+    public function getImage($filename, $module = 'default')
+    {
+        // Get the path to the image in the storage/app/public/images directory
+        $path = env('IMAGE_PATH') . $module . '/' . $filename;
+
+        // Check if the file exists
+        if (Storage::exists($path)) {
+            return Storage::url($path);
+        } else {
+            return null;
+        }
     }
 }
