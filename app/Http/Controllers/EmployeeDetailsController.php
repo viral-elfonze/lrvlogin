@@ -140,8 +140,9 @@ class EmployeeDetailsController extends Controller
                 } else if ($request->hasFile('resumelink')) {
                     $savedResume = $this->saveEmployeeImage($request, 'resumelink');
                 }
-
+                dd(Auth()->user()->id);
                 $employee = new EmployeeDetails();
+
                 $employee->employee_firstname = $request->input('employee_firstname');
                 $employee->employee_middlename = $request->input('employee_middlename');
                 $employee->employee_lastname = $request->input('employee_lastname');
