@@ -181,9 +181,21 @@ class EmployeeDetailsController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'Employee details not found']);
             }
 
-            // if ($employeeDetails['employee_image']) {
-            //     $employeeDetails['employee_image'] = app(PostController::class)->getImage($employeeDetails['employee_image']);
-            // }
+            // Decode the JSON data
+            $data = json_decode($employeeDetails, true);
+
+            // Check if "data" key exists and is not empty
+            if (isset($data['data']) && !empty($data['data'])) {
+                // Get the first employee's image value
+                $employeeImageValue = $data['data'][0]['employee_image'];
+                $data['data'][0]['employee_image'] = app(PostController::class)->getImage($employeeDetails['employee_image']);
+
+                // Print or use the value as needed
+                echo "Employee Image Value: " . $employeeImageValue;
+            } else {
+                // Handle the case where "data" key is missing or empty
+                echo "No employee data found";
+            }
 
             return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $employeeDetails]);
         } catch (Exception $e) {
