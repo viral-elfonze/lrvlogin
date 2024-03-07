@@ -33,7 +33,7 @@ class ImageService
 
         // Check if the file exists
         if (Storage::exists($path)) {
-            dd(Storage::get($path));
+            dd(storage_path('app/' . $path));
             return Storage::get($path);
         } else {
             return null;
