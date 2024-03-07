@@ -82,10 +82,10 @@ class PostController extends Controller
         return 'No image uploaded.';
     }
 
-    public function getImage(Request $request)
+    public function getImage($id)
     {
-        if ($request->has('image_id')) {
-            $imageDetail = ImageMaster::where('id', $request->input('image_id'))->first();
+        if ($id) {
+            $imageDetail = ImageMaster::where('id', $id)->first();
             if ($imageDetail) {
                 return $imageDetail->path . "/" . $imageDetail->filename;
             }
