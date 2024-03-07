@@ -39,4 +39,9 @@ class EmployeeSkillMatrix extends Model
     {
         return $this->belongsTo(Skills::class, 'skill_id');
     }
+
+    public function employeeDetails()
+    {
+        return $this->belongsTo(EmployeeDetails::class, 'employee_id');
+    }
 }
