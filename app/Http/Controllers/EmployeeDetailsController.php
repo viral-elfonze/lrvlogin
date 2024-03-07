@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Skills;
 use App\Models\Locations;
 use Illuminate\Http\Request;
 use App\Services\ImageService;
 use App\Models\EmployeeDetails;
-use Carbon\Carbon;
-use Exception;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,12 +20,6 @@ class EmployeeDetailsController extends Controller
         $this->middleware('cors');
         $this->ImageService = $ImageService;
     }
-    // public function __construct(ImageService $imageService)
-    // {
-    //     $this->middleware('auth');
-    //     $this->imageService = $imageService;
-    // }
-
 
     /**
      * Display a listing of the resource.
@@ -93,10 +86,10 @@ class EmployeeDetailsController extends Controller
     public function saveEmployeeImage(Request $request, String $value)
     {
         $file = ($value == 'employee_image') ? $request->file('employee_image') : $request->file('resumelink');
-        $savedfile = $this->ImageService->saveImage($file, $value);
+        $saved_file = $this->ImageService->saveImage($file, $value);
 
         // Return success response after saving employee image
-        return response()->json(['status' => 'success', 'message' => 'Employee image saved successfully', 'data' => $savedfile]);
+        return response()->json(['status' => 'success', 'message' => 'Employee image saved successfully', 'data' => $saved_file]);
     }
 
     /**
@@ -178,19 +171,24 @@ class EmployeeDetailsController extends Controller
             $employeeDetails = EmployeeDetails::with('imageMaster')->where('user_id', $id)->get();
 
             if (!$employeeDetails) {
-                return response()->json(['status' => 'error', 'message' => 'Employee details not found']);
+                return response()->json(['status' => 'error', 'message' => 'Employee details not found', 'data' => []]);
+            } else {
+                // Decode the JSON data
+                $data = json_decode($employeeDetails, true);
+
+                if (isset($data) && !empty($data)) {
+                    if (isset($data[0]['employee_image'])) {
+                        $path = $this->ImageService->getImage(app(PostController::class)->getImage($data[0]['employee_image']));
+                        $data[0]['employee_image'] = $path;
+                    }
+                    if (isset($data[0]['resumelink'])) {
+                        $path = $this->ImageService->getImage(app(PostController::class)->getImage($data[0]['resumelink']));
+                        $data[0]['resumelink'] = $path;
+                    }
+                }
+
+                return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $data]);
             }
-
-            // Decode the JSON data
-            $data = json_decode($employeeDetails, true);
-
-            $path = $this->ImageService->getImage(app(PostController::class)->getImage($data[0]['employee_image']));
-
-            if (isset($data) && !empty($data)) {
-                $data[0]['employee_image'] = $path;
-            }
-
-            return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $data]);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -238,7 +236,7 @@ class EmployeeDetailsController extends Controller
 
             // If employee not found, return error response
             if (!$employee) {
-                return response()->json(['status' => 'error', 'message' => 'Employee not found']);
+                return response()->json(['status' => 'error', 'message' => 'Employee not found', 'data' => []]);
             }
 
             // Update employee details
@@ -299,7 +297,7 @@ class EmployeeDetailsController extends Controller
 
             // If employee not found, return error response
             if (!$employee) {
-                return response()->json(['status' => 'error', 'message' => 'Employee not found']);
+                return response()->json(['status' => 'error', 'message' => 'Employee not found', 'data' => []]);
             }
 
             // Delete associated image (if any)
@@ -374,7 +372,7 @@ class EmployeeDetailsController extends Controller
 
             // If locations not found, return error response
             if (!$locations) {
-                return response()->json(['status' => 'error', 'message' => 'Locations not found']);
+                return response()->json(['status' => 'error', 'message' => 'Locations not found', 'data' => []]);
             }
 
             // Return JSON response with a message

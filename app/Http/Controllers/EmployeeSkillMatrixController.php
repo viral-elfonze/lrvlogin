@@ -23,7 +23,7 @@ class EmployeeSkillMatrixController extends Controller
 
             // If skill not found, return error response
             if (!$skills) {
-                return response()->json(['status' => 'error', 'message' => 'Skills not found']);
+                return response()->json(['status' => 'error', 'message' => 'Skills not found', 'data' => []]);
             }
 
             // Return JSON response with a message
@@ -106,7 +106,7 @@ class EmployeeSkillMatrixController extends Controller
 
              // If employee skill data not found, return error response
              if (!$employeeSkills) {
-                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found']);
+                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found', 'data' => []]);
             }
 
             $employeeSkills->update($request->all());
@@ -132,7 +132,7 @@ class EmployeeSkillMatrixController extends Controller
 
             // If employee skill not found, return error response
             if (!$employeeSkill) {
-                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found']);
+                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found', 'data' => []]);
             }
 
             // Delete employee skill record
@@ -154,10 +154,10 @@ class EmployeeSkillMatrixController extends Controller
     public function showEmployeeSkillMatrix($id)
     {
         try {
-            $employeeSkillMatrix = EmployeeSkillMatrix::where('id', $id)->first();
+            $employeeSkillMatrix = EmployeeSkillMatrix::with(['Skills', 'EmployeeDetails'])->where('id', $id)->first();
 
             if (!$employeeSkillMatrix) {
-                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found']);
+                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found', 'data' => []]);
             }
 
             return response()->json([['status' => 'success', 'message' => 'Employee skill data fetched successfully'], 'data' => $employeeSkillMatrix]);
@@ -178,7 +178,7 @@ class EmployeeSkillMatrixController extends Controller
             $employeeSkillMatrix = EmployeeSkillMatrix::with('skills')->where('employee_id', $id)->first();
 
             if (!$employeeSkillMatrix) {
-                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found']);
+                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found', 'data' => []]);
             }
 
             return response()->json([['status' => 'success', 'message' => 'Employee skill data fetched successfully'], 'data' => $employeeSkillMatrix]);
@@ -210,6 +210,7 @@ class EmployeeSkillMatrixController extends Controller
 
         // Return JSON response with a message
         return response()->json([
+            'status' => 'success',
             'message' => 'All Employee skills data retrieved successfully.',
             'data' => $employees,
         ]);

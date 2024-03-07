@@ -39,6 +39,11 @@ class EmployeeDetails extends Model
 
     public function imageMaster()
     {
-        return $this->belongsTo(ImageMaster::class);
+        return $this->belongsTo(ImageMaster::class, 'id');
+    }
+
+    public function employeeSkills()
+    {
+        return $this->hasMany(EmployeeSkillMatrix::class, 'id');
     }
 }
