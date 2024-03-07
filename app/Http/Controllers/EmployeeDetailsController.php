@@ -185,9 +185,9 @@ class EmployeeDetailsController extends Controller
             $data = json_decode($employeeDetails, true);
 
             $path = $this->ImageService->getImage(app(PostController::class)->getImage($data[0]['employee_image']));
-            dd($path);
+
             if (isset($data) && !empty($data)) {
-                $data[0]['employee_image'] = app(PostController::class)->getImage($data[0]['employee_image']);
+                $data[0]['employee_image'] = $path;
             }
 
             return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $employeeDetails]);
