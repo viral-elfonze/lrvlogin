@@ -96,8 +96,7 @@ class UserController extends Controller
 
             // Call the saveImage method of the ImageService
             $imageObj = $this->imageService->saveImage($file,$request->input('module'));
-            dump($imageObj);
-            dump($imageObj->id);
+            // 3
             // Optionally, save the filename to the database or perform any other operations
 
             return 'Image uploaded successfully.';
@@ -110,7 +109,9 @@ class UserController extends Controller
 
     public function getImage(Request $request){
 
+
         if ($request->has('image_id')) {
+
             $imageDetail = ImageMaster::where('id',$request->input('image_id'))->first();
             if($imageDetail){
                 return $imageDetail->path."/".$imageDetail->filename;

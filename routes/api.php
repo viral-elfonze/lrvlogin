@@ -54,7 +54,7 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::get('/user/logout', [UserController::class, 'logout'])->name('user.lougout');
     Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
     Route::post('/user/uploadimage', [UserController::class, 'uploadImage'])->name('user.uploadImage');
-    Route::get('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');
+    Route::post('/user/getimage', [UserController::class, 'getImage'])->name('user.getImage');
 
     Route::get('/employee/skills', [EmployeeDetailsController::class, 'getEmployeeSkills'])->name('employee.skills');
     Route::get('verify-employee/{employee_id}', [EmployeeDetailsController::class, 'verifyemployee_id'])->name('employee.verify.id');
