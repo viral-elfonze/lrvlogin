@@ -16,13 +16,15 @@ class EmployeeSkillMatrix extends Model
      */
     protected $table = 'employee_skill_matrix';
 
+    protected $primaryKey = 'id';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'id', 'skill_id', 'employee_id', 'relevantexp', 'competency'
+        'skill_id', 'employee_id', 'relevantexp', 'competency'
     ];
 
     /**
