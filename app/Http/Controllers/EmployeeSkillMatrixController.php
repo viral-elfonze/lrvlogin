@@ -28,6 +28,7 @@ class EmployeeSkillMatrixController extends Controller
 
             // Return JSON response with a message
             return response()->json([
+                'status' => 'success',
                 'message' => 'All skills data retrieved successfully.',
                 'data' => $skills,
             ]);
@@ -47,7 +48,7 @@ class EmployeeSkillMatrixController extends Controller
         try {
             $rules = [
                 'skill_id' => 'required|exists:skills,skill_id',
-                'employee_id' => 'required',
+                'employee_id' => 'required|exists:employee_details,employee_id',
                 'relevantexp' => 'required|integer|min:0',
                 'competency' => 'required'
             ];
@@ -87,7 +88,7 @@ class EmployeeSkillMatrixController extends Controller
 
             $rules = [
                 'skill_id' => 'required|exists:skills,skill_id',
-                'employee_id' => 'required',
+                'employee_id' => 'required|exists:employee_details,employee_id',
                 'relevantexp' => 'required|integer|min:0',
                 'competency' => 'required'
             ];
@@ -106,13 +107,13 @@ class EmployeeSkillMatrixController extends Controller
 
              // If employee skill data not found, return error response
              if (!$employeeSkills) {
-                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found', 'data' => []]);
+                return response()->json(['status' => 'error', 'message' => 'Employee skill matrix data not found', 'data' => []]);
             }
 
             $employeeSkills->update($request->all());
 
             // Return success response after saving employee skill matrix data
-            return response()->json(['status' => 'success', 'message' => 'Employee skill matrix updated successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Employee skill matrix data updated successfully']);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -132,14 +133,14 @@ class EmployeeSkillMatrixController extends Controller
 
             // If employee skill not found, return error response
             if (!$employeeSkill) {
-                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found', 'data' => []]);
+                return response()->json(['status' => 'error', 'message' => 'Employee skill matrix data not found', 'data' => []]);
             }
 
             // Delete employee skill record
             $employeeSkill->delete();
 
             // Return success response
-            return response()->json(['status' => 'success', 'message' => 'Employee skill data deleted successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Employee skill matrix data deleted successfully']);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -172,16 +173,16 @@ class EmployeeSkillMatrixController extends Controller
     /**
      * Display the specified employee skills resource.
      */
-    public function getMySkills($id)
+    public function getMySkills($employee_id)
     {
         try {
-            $employeeSkillMatrix = EmployeeSkillMatrix::with('skills')->where('employee_id', $id)->first();
+            $employeeSkillMatrix = EmployeeSkillMatrix::with(['skills', 'EmployeeDetails'])->where('employee_id', $employee_id)->get();
 
             if (!$employeeSkillMatrix) {
-                return response()->json(['status' => 'error', 'message' => 'Employee skill data not found', 'data' => []]);
+                return response()->json(['status' => 'error', 'message' => 'My skills data not found', 'data' => []]);
             }
 
-            return response()->json([['status' => 'success', 'message' => 'Employee skill data fetched successfully'], 'data' => $employeeSkillMatrix]);
+            return response()->json([['status' => 'success', 'message' => 'My skills data fetched successfully'], 'data' => $employeeSkillMatrix]);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
