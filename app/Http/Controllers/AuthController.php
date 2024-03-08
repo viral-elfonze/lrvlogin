@@ -79,7 +79,7 @@ class AuthController extends Controller
                 'password' => Hash::make($email)
             ]);
             //get the role
-            $role = Role::where('name', 'employee')->first();
+            $role = Role::where('role_name', 'employee')->first();
             $user->roles()->attach($role);
         }
         $data['token'] = $user->createToken($email)->plainTextToken;
