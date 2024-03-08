@@ -130,7 +130,9 @@ class EmployeeDetailsController extends Controller
             } else {
                 if ($request->hasFile('employee_image')) {
                     $savedImageFile = $this->saveEmployeeImage($request, 'employee_image');
-                } else if ($request->hasFile('resumelink')) {
+                }
+
+                if ($request->hasFile('resumelink')) {
                     $savedResume = $this->saveEmployeeImage($request, 'resumelink');
                 }
 
