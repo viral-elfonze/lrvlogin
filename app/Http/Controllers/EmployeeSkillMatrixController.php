@@ -105,8 +105,8 @@ class EmployeeSkillMatrixController extends Controller
                 ]);
             }
 
-             // If employee skill data not found, return error response
-             if (!$employeeSkills) {
+            // If employee skill data not found, return error response
+            if (!$employeeSkills) {
                 return response()->json(['status' => 'error', 'message' => 'Employee skill matrix data not found', 'data' => []]);
             }
 
@@ -192,18 +192,25 @@ class EmployeeSkillMatrixController extends Controller
     }
 
     /**
-     * Display a listing of the employee skill matrix.
+     * Display a listing of the employee skill matrix with filter.
      *
      * @return \Illuminate\Http\Response
      */
-    public function getEmployeeSkillMatrix(Request $request)
+    public function getEmployeeSkillWithFilter(Request $request)
     {
         // Start with a query to retrieve all employees kill matrix
-        $employeesSkills = EmployeeSkillMatrix::query();
+        $employeesSkills = EmployeeSkillMatrix::with(['skills', 'EmployeeDetails']);
 
-        // Apply filters if provided in the request
-        if ($request->has('skill_id')) {
-            $employeesSkills->where('skill_id', $request->skill_id);
+        // Apply sorting
+        if ($request->has('sort_by')) {
+            $employeesSkills->orderBy($request->input('sort_by'), $request->input('sort_order', 'asc'));
+        }
+
+        // Apply filter
+        if ($request->has('skill_set')) {
+            $employeesSkills->whereHas('skills', function ($query) use ($request) {
+                $query->where('skill', 'like', '%' . $request->input('skill_set') . '%');
+            });
         }
 
         // Retrieve the filtered employees data
@@ -212,7 +219,7 @@ class EmployeeSkillMatrixController extends Controller
         // Return JSON response with a message
         return response()->json([
             'status' => 'success',
-            'message' => 'All Employee skills data retrieved successfully.',
+            'message' => 'All Filtered Employee skills data retrieved successfully.',
             'data' => $employees,
         ]);
     }

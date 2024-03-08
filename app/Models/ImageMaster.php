@@ -31,9 +31,4 @@ class ImageMaster extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-
-    public function employeeDetails()
-    {
-        return $this->hasMany(EmployeeDetails::class, 'employee_id');
-    }
 }

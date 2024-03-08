@@ -37,11 +37,6 @@ class EmployeeDetails extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function imageMaster()
-    {
-        return $this->belongsTo(ImageMaster::class, 'id');
-    }
-
     public function employeeSkills()
     {
         return $this->hasMany(EmployeeSkillMatrix::class, 'id');

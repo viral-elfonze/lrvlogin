@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmployeeDetailsController;
 use App\Http\Controllers\Auth\LoginRegisterController;
+use App\Http\Controllers\EmployeeCertificationController;
 use App\Http\Controllers\EmployeeSkillMatrixController;
 
 /*
@@ -71,8 +72,13 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::get('/my-skills/{employee_id}', [EmployeeSkillMatrixController::class, 'getMySkills'])->name('my.skills');
     Route::delete('/employee-skill/delete/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'removeEmployeeSkillMatrix'])->name('employee.skill.delete');
     Route::post('/employee-skill/update/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'updateEmployeeSkillMatrix'])->name('employee.skill.update');
+    Route::post('/employee-skill/list', [EmployeeSkillMatrixController::class, 'getEmployeeSkillWithFilter'])->name('employee.skill.list');
 
-
+    Route::post('/employee-certificate/store', [EmployeeCertificationController::class, 'saveEmployeeCertification'])->name('employee.certificate.store');
+    Route::delete('/employee-certificate/delete/{employee_certificate_id}', [EmployeeCertificationController::class, 'removeCertification'])->name('employee.certificate.delete');
+    Route::post('/employee-certificate/update/{employee_certificate_id}', [EmployeeCertificationController::class, 'updateEmployeeCertification'])->name('employee.certificate.update');
+    Route::get('/employee-certificate/show/{employee_certificate_id}', [EmployeeCertificationController::class, 'showEmployeeCertificates'])->name('employee.certificate.show');
+    Route::get('/my-certificates/{employee_id}', [EmployeeCertificationController::class, 'showEmployeeCertificateById'])->name('my.certificates');
 });
 
 

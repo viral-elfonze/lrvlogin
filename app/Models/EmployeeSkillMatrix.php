@@ -46,4 +46,9 @@ class EmployeeSkillMatrix extends Model
     {
         return $this->belongsTo(EmployeeDetails::class, 'employee_id');
     }
+
+    public function employeeCertifications()
+    {
+        return $this->hasMany(EmployeeCertification::class, 'employee_skill_matrix_id');
+    }
 }
