@@ -68,10 +68,10 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::get('/all/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
     Route::post('/employee-skill/store', [EmployeeSkillMatrixController::class, 'saveEmployeeSkillMatrix'])->name('employee.skill.store');
     Route::get('/employee-skill/show/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'showEmployeeSkillMatrix'])->name('employee.skill.show');
-    Route::post('/employee-skill/update/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'updateEmployeeSkillMatrix'])->name('employee.skill.update');
+    Route::get('/my-skills/{employee_id}', [EmployeeSkillMatrixController::class, 'getMySkills'])->name('my.skills');
     Route::delete('/employee-skill/delete/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'removeEmployeeSkillMatrix'])->name('employee.skill.delete');
+    Route::post('/employee-skill/update/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'updateEmployeeSkillMatrix'])->name('employee.skill.update');
 
-    Route::get('/my/skills/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'getMySkills'])->name('my.skills');
 
 });
 
