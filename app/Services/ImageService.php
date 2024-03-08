@@ -14,7 +14,8 @@ class ImageService
         $filename = uniqid() . '_' . $file->getClientOriginalName();
 
         // Store the image in the storage/app/public/images directory
-        $file->storeAs(env('IMAGE_PATH') . $module, $filename);
+        // $file->storeAs(env('IMAGE_PATH') . $module, $filename);
+        $file->storeAs('uploads/' . $module, $filename, 'public');
 
         //save into table
         $image = new ImageMaster();

@@ -113,6 +113,8 @@ class UserController extends Controller
         if ($request->has('image_id')) {
 
             $imageDetail = ImageMaster::where('id',$request->input('image_id'))->first();
+            dd($imageDetail->path."/".$imageDetail->filename);
+
             if($imageDetail){
                 return $imageDetail->path."/".$imageDetail->filename;
             }
