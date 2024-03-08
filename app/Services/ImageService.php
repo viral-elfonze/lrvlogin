@@ -15,7 +15,7 @@ class ImageService
 
         // Store the image in the storage/app/public/images directory
         // $file->storeAs(env('IMAGE_PATH') . $module, $filename);
-        $file->storeAs('uploads/' . $module, $filename, 'public');
+        $file->storeAs(env('IMAGE_UPLOAD') . $module, $filename, 'public');
 
         //save into table
         $image = new ImageMaster();
@@ -30,7 +30,7 @@ class ImageService
     public function getImage($filename)
     {
         // Get the path to the image in the storage/app/public/images directory
-        $path = env('IMAGE_PATH') . $filename;
+        $path = env('IMAGE_PATH') . env('IMAGE_UPLOAD') . $filename;
 
         // Check if the file exists
         if (Storage::exists($path)) {
