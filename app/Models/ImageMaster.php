@@ -4,14 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-
 class ImageMaster extends Model
 {
     use HasFactory;
+
     protected $table = 'images_master';
+
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.
@@ -23,8 +22,18 @@ class ImageMaster extends Model
         'path',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function employeeDetails()
     {
-        return $this->hasMany(EmployeeDetails::class);
+        return $this->hasMany(EmployeeDetails::class, 'employee_id');
     }
 }

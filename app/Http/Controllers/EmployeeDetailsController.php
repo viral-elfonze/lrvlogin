@@ -130,12 +130,15 @@ class EmployeeDetailsController extends Controller
             } else {
                 if ($request->hasFile('employee_image')) {
                     $savedImageFile = $this->saveEmployeeImage($request, 'employee_image');
-                } else if ($request->hasFile('resumelink')) {
+                }
+
+                if ($request->hasFile('resumelink')) {
                     $savedResume = $this->saveEmployeeImage($request, 'resumelink');
                 }
 
                 $employee = new EmployeeDetails();
 
+                $employee->user_id = auth()->user()->id;
                 $employee->employee_firstname = $request->input('employee_firstname');
                 $employee->employee_middlename = $request->input('employee_middlename');
                 $employee->employee_lastname = $request->input('employee_lastname');
@@ -241,6 +244,7 @@ class EmployeeDetailsController extends Controller
             }
 
             // Update employee details
+            $employee->user_id = auth()->user()->id;
             $employee->employee_firstname = $request->input('employee_firstname');
             $employee->employee_middlename = $request->input('employee_middlename');
             $employee->employee_lastname = $request->input('employee_lastname');
