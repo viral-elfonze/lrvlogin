@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeDetails;
 use App\Models\ImageMaster;
 use App\Models\User;
 use App\Services\ImageService;
@@ -41,6 +42,11 @@ class UserController extends Controller
             foreach ($user->roles as $role) {
                 $user['roles'] = $role->rolename; // Role's name
             }
+        }
+        //add employee
+        if($user){
+            $employee = EmployeeDetails::where('user_id',$user->id)->first();
+            $user['employee'] = $employee;
         }
 
         $response = [
