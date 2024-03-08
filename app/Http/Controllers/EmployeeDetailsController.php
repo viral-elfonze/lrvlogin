@@ -173,6 +173,7 @@ class EmployeeDetailsController extends Controller
         try {
             // Find the employee record by ID
             $employeeDetails = EmployeeDetails::with('imageMaster')->where('user_id', $id)->get();
+            dd($employeeDetails);
 
             if (!$employeeDetails) {
                 return response()->json(['status' => 'error', 'message' => 'Employee details not found', 'data' => []]);
@@ -182,11 +183,11 @@ class EmployeeDetailsController extends Controller
 
                 if (isset($data) && !empty($data)) {
                     if (isset($data[0]['employee_image'])) {
-                        $path = $this->ImageService->getImage(app(PostController::class)->getImage($data[0]['employee_image']));
+                        $path = $this->ImageService->getImagePath($data[0]['employee_image']);
                         $data[0]['employee_image'] = $path;
                     }
                     if (isset($data[0]['resumelink'])) {
-                        $path = $this->ImageService->getImage(app(PostController::class)->getImage($data[0]['resumelink']));
+                        $path = $this->ImageService->getImagePath($data[0]['resumelink']);
                         $data[0]['resumelink'] = $path;
                     }
                 }
