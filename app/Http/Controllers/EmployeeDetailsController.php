@@ -222,8 +222,8 @@ class EmployeeDetailsController extends Controller
                 'location' => 'required',
                 'startdate' => 'required',
                 'enddate' => 'nullable',
-                'resumelink' => 'required|mimes:pdf|max:2048',
-                'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'resumelink' => 'required',
+                'employee_image' => 'required',
                 'isactive' => 'required|boolean',
             ];
 
