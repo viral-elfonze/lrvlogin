@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\MicrosoftGraphAuthenticate;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -77,6 +78,9 @@ class AuthController extends Controller
                 'email' => $email,
                 'password' => Hash::make($email)
             ]);
+            //get the role
+            $role = Role::where('name', 'employee')->first();
+            $user->roles()->attach($role);
         }
         $data['token'] = $user->createToken($email)->plainTextToken;
 
