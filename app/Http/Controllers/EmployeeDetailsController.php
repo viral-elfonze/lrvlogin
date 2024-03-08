@@ -173,7 +173,7 @@ class EmployeeDetailsController extends Controller
         try {
             // Find the employee record by ID
             $employeeDetails = EmployeeDetails::with('imageMaster')->where('user_id', $id)->get();
-            dd($employeeDetails);
+
 
             if (!$employeeDetails) {
                 return response()->json(['status' => 'error', 'message' => 'Employee details not found', 'data' => []]);
@@ -191,7 +191,7 @@ class EmployeeDetailsController extends Controller
                         $data[0]['resumelink'] = $path;
                     }
                 }
-
+                // dd($data);
                 return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $data]);
             }
         } catch (Exception $e) {
