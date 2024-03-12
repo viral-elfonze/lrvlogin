@@ -66,6 +66,8 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::post('/employee/update/{employee_id}', [EmployeeDetailsController::class, 'updateEmployeeDetail'])->name('employee.update');
     Route::delete('/employee/delete/{employee_id}', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
 
+    Route::post('/employee/skills/list', [EmployeeDetailsController::class, 'getEmployeeDetailsWithFilter'])->name('employee.skills.list');
+
     Route::get('/all/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
     Route::post('/employee-skill/store', [EmployeeSkillMatrixController::class, 'saveEmployeeSkillMatrix'])->name('employee.skill.store');
     Route::get('/employee-skill/show/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'showEmployeeSkillMatrix'])->name('employee.skill.show');

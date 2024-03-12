@@ -8,6 +8,7 @@ use App\Models\Locations;
 use Illuminate\Http\Request;
 use App\Services\ImageService;
 use App\Models\EmployeeDetails;
+use App\Models\EmployeeSkillMatrix;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -177,8 +178,7 @@ class EmployeeDetailsController extends Controller
     {
         try {
             // Find the employee record by ID
-            $employeeDetails = EmployeeDetails::where('employee_id', $id)->get();
-
+            $employeeDetails = EmployeeDetails::where(['employee_id' => $id, 'deleted_at' => null])->get();
 
             if (!$employeeDetails) {
                 return response()->json(['status' => 'error', 'message' => 'Employee details not found', 'data' => []]);
@@ -196,7 +196,7 @@ class EmployeeDetailsController extends Controller
                         $data[0]['resumelink'] = $path;
                     }
                 }
-                // dd($data);
+
                 return response()->json([['status' => 'success', 'message' => 'Employee details fetched successfully'], 'data' => $data]);
             }
         } catch (Exception $e) {
@@ -214,7 +214,7 @@ class EmployeeDetailsController extends Controller
     {
         try {
             // Find employee by employee ID column
-            $employee = EmployeeDetails::where('employee_id', $employeeId)->first();
+            $employee = EmployeeDetails::where(['employee_id' => $employeeId, 'deleted_at' => null])->first();
 
             $rules = [
                 'employee_firstname' => 'required',
@@ -398,5 +398,65 @@ class EmployeeDetailsController extends Controller
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Display a listing of the employee data with filter.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getEmployeeDetailsWithFilter(Request $request)
+    {
+        // Start with a query to retrieve all employees kill matrix
+        $employeesSkills = EmployeeSkillMatrix::join('employee_details', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
+            ->join('skills', 'employee_skill_matrix.skill_id', '=', 'skills.skill_id')
+            ->select(
+                'skills.skill',
+                'employee_details.employee_id',
+                'employee_details.employee_firstname',
+                'employee_details.employee_lastname',
+                'employee_details.resumelink',
+                'employee_details.relevantexp',
+                'employee_details.totalexp',
+            );
+
+        // Apply sorting
+        if ($request->has('sort_by')) {
+            $employeesSkills->orderBy($request->input('sort_by'), $request->input('sort_order', 'asc'));
+        }
+
+        // Apply filter
+        if ($request->has('skill_set')) {
+            $employeesSkills->whereHas('skills', function ($query) use ($request) {
+                $query->where('skill', 'like', '%' . $request->input('skill_set') . '%');
+            });
+        }
+
+        // Retrieve the filtered employees data
+        $employees = $employeesSkills->get();
+        $employeesData = [];
+        $i = 0;
+
+        // Decode the JSON data
+        $data = json_decode($employees, true);
+
+        if (isset($data) && !empty($data)) {
+            foreach ($data as $employee) {
+                if (isset($employee['resumelink'])) {
+                    $path = $this->ImageService->getImagePath($employee['resumelink']);
+                    $employee['resumelink'] = $path;
+                }
+
+                $employeesData[$i] = $employee;
+                $i++;
+            }
+        }
+
+        // Return JSON response with a message
+        return response()->json([
+            'status' => 'success',
+            'message' => 'All Filtered Employee data retrieved successfully.',
+            'data' => $employeesData,
+        ]);
     }
 }
