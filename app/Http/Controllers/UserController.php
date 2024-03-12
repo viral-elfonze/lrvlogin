@@ -59,7 +59,7 @@ class UserController extends Controller
                     $data['resumelink'] = $path;
                 }
             }
-            $user['employee'] = $employee;
+            $user['employee'] = $data;
         }
 
         $response = [
