@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeCertification;
 use Exception;
 use App\Models\Skills;
 use Illuminate\Http\Request;
@@ -50,7 +51,10 @@ class EmployeeSkillMatrixController extends Controller
                 'skill_id' => 'required|exists:skills,skill_id',
                 'employee_id' => 'required|exists:employee_details,employee_id',
                 'relevantexp' => 'required|integer|min:0',
-                'competency' => 'required'
+                'competency' => 'required',
+                'is_certificate'=>'boolean',
+                'certificate' => 'array',
+
             ];
 
             // Validate the request data
@@ -65,8 +69,25 @@ class EmployeeSkillMatrixController extends Controller
                 ]);
             }
 
-            EmployeeSkillMatrix::create($request->all());
+            $empSkillObj  = EmployeeSkillMatrix::create($request->all());
 
+            if($request->input('is_certificate')){
+                //array loop
+                // get the cerificate of the skill
+                if ($request->hasFile('certification_image')) {
+                    $savedImageFile = $this->saveCertificationImage($request, 'certification_image');
+                }
+
+                $employeeCertificate = new EmployeeCertification();
+                $employeeCertificate->employee_skill_matrix_id =  $empSkillObj->id;
+                $employeeCertificate->name = $request->input('name');
+                $employeeCertificate->number = $request->input('number');
+                $employeeCertificate->description = $request->input('description');
+                $employeeCertificate->issue_date = $request->input('issue_date');
+                $employeeCertificate->expiry_date = $request->input('expiry_date');
+                $employeeCertificate->certification_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null;
+                $employeeCertificate->save();
+            }
             // Return success response after saving employee skill matrix data
             return response()->json(['status' => 'success', 'message' => 'Employee skill matrix saved successfully']);
         } catch (Exception $e) {
