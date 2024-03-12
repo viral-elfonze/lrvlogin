@@ -7,10 +7,19 @@ use Exception;
 use App\Models\Skills;
 use Illuminate\Http\Request;
 use App\Models\EmployeeSkillMatrix;
+use App\Services\ImageService;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeSkillMatrixController extends Controller
 {
+    protected $ImageService;
+
+    public function __construct(ImageService $ImageService)
+    {
+        $this->middleware('cors');
+        $this->ImageService = $ImageService;
+    }
+
     /**
      * Display a listing of the skills.
      *
@@ -42,6 +51,17 @@ class EmployeeSkillMatrixController extends Controller
     }
 
     /**
+     * Store a newly created employee image or employee resume.
+     */
+    public function saveCertificationImage($img, String $value)
+    {
+        $savedFile = $this->ImageService->saveImage($img, $value);
+
+        // Return success response after saving employee image
+        return response()->json(['status' => 'success', 'message' => 'Employee certificate saved successfully', 'data' => $savedFile]);
+    }
+
+    /**
      * Store a newly created employee skills.
      */
     public function saveEmployeeSkillMatrix(Request $request)
@@ -52,9 +72,8 @@ class EmployeeSkillMatrixController extends Controller
                 'employee_id' => 'required|exists:employee_details,employee_id',
                 'relevantexp' => 'required|integer|min:0',
                 'competency' => 'required',
-                'is_certificate'=>'boolean',
+                'is_certificate' => 'boolean',
                 'certificate' => 'array',
-
             ];
 
             // Validate the request data
@@ -69,24 +88,43 @@ class EmployeeSkillMatrixController extends Controller
                 ]);
             }
 
+            $savedImageFile = '';
             $empSkillObj  = EmployeeSkillMatrix::create($request->all());
 
-            if($request->input('is_certificate')){
-                //array loop
-                // get the cerificate of the skill
-                if ($request->hasFile('certification_image')) {
-                    $savedImageFile = $this->saveCertificationImage($request, 'certification_image');
-                }
+            if ($request->input('is_certificate')) {
+                foreach ($request->input('certificates') as $index => $certificateData) {
+                    $certificateValidator = Validator::make($certificateData, [
+                        'certificates.*.name' => 'required|string',
+                        'certificates.*.number' => 'required|string',
+                        'certificates.*.description' => 'string|nullable',
+                        'certificates.*.issue_date' => 'date|nullable',
+                        'certificates.*.expiry_date' => 'date|nullable',
+                        'certificates.*.certification_image' => 'file|mimes:jpeg,png,jpg,gif|max:2048', // Adjust file validation as needed
+                    ]);
 
-                $employeeCertificate = new EmployeeCertification();
-                $employeeCertificate->employee_skill_matrix_id =  $empSkillObj->id;
-                $employeeCertificate->name = $request->input('name');
-                $employeeCertificate->number = $request->input('number');
-                $employeeCertificate->description = $request->input('description');
-                $employeeCertificate->issue_date = $request->input('issue_date');
-                $employeeCertificate->expiry_date = $request->input('expiry_date');
-                $employeeCertificate->certification_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null;
-                $employeeCertificate->save();
+                    if ($certificateValidator->fails()) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Certificate Validation Error',
+                            'data' => $certificateValidator->errors(),
+                        ]);
+                    }
+
+                    if ($request->hasFile("certificates.$index.certification_image") && $request->file("certificates.$index.certification_image")->isValid()) {
+                        $img = $request->file("certificates.$index.certification_image");
+                        $savedImageFile = $this->saveCertificationImage($img, 'certification_image');
+                    }
+
+                    $employeeCertificate = new EmployeeCertification();
+                    $employeeCertificate->employee_skill_matrix_id =  $empSkillObj->id;
+                    $employeeCertificate->name = $certificateData['name'];
+                    $employeeCertificate->number = $certificateData['number'];
+                    $employeeCertificate->description = $certificateData['description'];
+                    $employeeCertificate->issue_date = $certificateData['issue_date'];
+                    $employeeCertificate->expiry_date = $certificateData['expiry_date'];
+                    $employeeCertificate->certification_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null;
+                    $employeeCertificate->save();
+                }
             }
             // Return success response after saving employee skill matrix data
             return response()->json(['status' => 'success', 'message' => 'Employee skill matrix saved successfully']);
