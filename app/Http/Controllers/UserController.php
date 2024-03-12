@@ -32,11 +32,12 @@ class UserController extends Controller
     {
         return view('home');
     }
-    public function userdetails(){
+    public function userdetails()
+    {
 
-       if(Auth::user()){
-        $user = User::find(Auth::user()->id);
-       }
+        if (Auth::user()) {
+            $user = User::find(Auth::user()->id);
+        }
         $data['user'] = $user;
         if ($user->roles->isNotEmpty()) {
             foreach ($user->roles as $role) {
@@ -44,8 +45,20 @@ class UserController extends Controller
             }
         }
         //add employee
-        if($user){
-            $employee = EmployeeDetails::where('user_id',$user->id)->first();
+        if ($user) {
+            $employee = EmployeeDetails::where('user_id', $user->id)->first();
+            $data = json_decode($employee, true);
+
+            if (isset($data) && !empty($data)) {
+                if (isset($data['employee_image'])) {
+                    $path = $this->imageService->getImagePath($data['employee_image']);
+                    $data['employee_image'] = $path;
+                }
+                if (isset($data['resumelink'])) {
+                    $path = $this->imageService->getImagePath($data['resumelink']);
+                    $data['resumelink'] = $path;
+                }
+            }
             $user['employee'] = $employee;
         }
 
@@ -66,7 +79,7 @@ class UserController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'User is logged out successfully'
-            ], 200);
+        ], 200);
         // dd($request->user()->token());
         // return view('home');
     }
@@ -94,36 +107,38 @@ class UserController extends Controller
     }
 
     //image upload example
-    public function uploadImage(Request $request){
+    public function uploadImage(Request $request)
+    {
 
         if ($request->hasFile('image')) {
 
             $file = $request->file('image');
 
             // Call the saveImage method of the ImageService
-            $imageObj = $this->imageService->saveImage($file,$request->input('module'));
+            $imageObj = $this->imageService->saveImage($file, $request->input('module'));
             // 3
             // Optionally, save the filename to the database or perform any other operations
 
             return 'Image uploaded successfully.';
-        }else{
+        } else {
             dd("2");
         }
 
         return 'No image uploaded.';
     }
 
-    public function getImage(Request $request){
+    public function getImage(Request $request)
+    {
 
 
         if ($request->has('image_id')) {
 
-            $imageDetail = ImageMaster::where('id',$request->input('image_id'))->first();
+            $imageDetail = ImageMaster::where('id', $request->input('image_id'))->first();
 
-            if($imageDetail){
-                return env('IMAGE_PATH').env('IMAGE_UPLOAD').$imageDetail->path."/".$imageDetail->filename;
+            if ($imageDetail) {
+                return env('IMAGE_PATH') . env('IMAGE_UPLOAD') . $imageDetail->path . "/" . $imageDetail->filename;
             }
-        }else{
+        } else {
             return 'image not found';
         }
     }
