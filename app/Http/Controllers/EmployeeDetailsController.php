@@ -171,7 +171,7 @@ class EmployeeDetailsController extends Controller
     {
         try {
             // Find the employee record by ID
-            $employeeDetails = EmployeeDetails::where('user_id', $id)->get();
+            $employeeDetails = EmployeeDetails::where('employee_id', $id)->get();
 
 
             if (!$employeeDetails) {
