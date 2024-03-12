@@ -410,6 +410,7 @@ class EmployeeDetailsController extends Controller
         // Start with a query to retrieve all employees kill matrix
         $employeesSkills = EmployeeSkillMatrix::join('employee_details', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
             ->join('skills', 'employee_skill_matrix.skill_id', '=', 'skills.skill_id')
+            ->join('employee_certifications', 'employee_certifications.employee_skill_matrix_id', '=', 'employee_skill_matrix.id')
             ->select(
                 'skills.skill',
                 'employee_details.employee_id',
@@ -418,6 +419,7 @@ class EmployeeDetailsController extends Controller
                 'employee_details.resumelink',
                 'employee_details.relevantexp',
                 'employee_details.totalexp',
+                'employee_certifications.*'
             );
 
         // Apply sorting
@@ -445,6 +447,11 @@ class EmployeeDetailsController extends Controller
                 if (isset($employee['resumelink'])) {
                     $path = $this->ImageService->getImagePath($employee['resumelink']);
                     $employee['resumelink'] = $path;
+                }
+
+                if (isset($employee['certification_image'])) {
+                    $path = $this->ImageService->getImagePath($employee['certification_image']);
+                    $employee['certification_image'] = $path;
                 }
 
                 $employeesData[$i] = $employee;
