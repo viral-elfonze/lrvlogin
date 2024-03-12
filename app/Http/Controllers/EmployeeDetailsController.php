@@ -10,6 +10,7 @@ use App\Services\ImageService;
 use App\Models\EmployeeDetails;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class EmployeeDetailsController extends Controller
 {
@@ -105,7 +106,12 @@ class EmployeeDetailsController extends Controller
                 'employee_firstname' => 'required',
                 'employee_middlename' => 'nullable',
                 'employee_lastname' => 'required',
-                'employee_code' => 'required|unique:employee_details',
+                'employee_code' => [
+                    'required',
+                    Rule::unique('employee_details')->where(function ($query) {
+                        return $query->whereNull('deleted_at');
+                    }),
+                ],
                 'employement_type' => 'required',
                 'relevantexp' => 'required|integer|min:0',
                 'totalexp' => 'required|integer|min:0',
