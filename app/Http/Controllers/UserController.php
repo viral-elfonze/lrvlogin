@@ -59,13 +59,13 @@ class UserController extends Controller
                     $data['resumelink'] = $path;
                 }
             }
-            $user['employee'] = $employee;
+            $user['employee'] = $data;
         }
 
         $response = [
             'status' => 'success',
             'message' => 'User details.',
-            'data' => $data,
+            'data' => $user,
         ];
 
         return response()->json($response, 200);

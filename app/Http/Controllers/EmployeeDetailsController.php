@@ -28,7 +28,7 @@ class EmployeeDetailsController extends Controller
     public function getEmployeeDetails()
     {
         try {
-            $employeesData = EmployeeDetails::all();
+            $employeesData = EmployeeDetails::where('deleted_at', null)->get();
 
             //If employee data not found
             if (!$employeesData) {
@@ -143,7 +143,6 @@ class EmployeeDetailsController extends Controller
                 }
 
                 $employee = new EmployeeDetails();
-
                 $employee->user_id = auth()->user()->id;
                 $employee->employee_firstname = $request->input('employee_firstname');
                 $employee->employee_middlename = $request->input('employee_middlename');
@@ -178,7 +177,7 @@ class EmployeeDetailsController extends Controller
     {
         try {
             // Find the employee record by ID
-            $employeeDetails = EmployeeDetails::with('imageMaster')->where('user_id', $id)->get();
+            $employeeDetails = EmployeeDetails::where('employee_id', $id)->get();
 
 
             if (!$employeeDetails) {
