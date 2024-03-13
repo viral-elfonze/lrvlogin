@@ -67,7 +67,7 @@ class EmployeeDetails extends Model
 
     public function getFullNameAttribute()
     {
-        return "{$this->employee_firstname} {$this->employee_middlename}";
+        return "{$this->employee_firstname} {$this->employee_middlename} {$this->employee_lastname}";
     }
     public function getResumeUrlAttribute()
     {

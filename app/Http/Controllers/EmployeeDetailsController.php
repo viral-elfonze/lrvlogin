@@ -29,12 +29,15 @@ class EmployeeDetailsController extends Controller
     public function getEmployeeDetails(Request $request)
     {
         try {
+            // dump('Java', 'PHP');
+            // dd($request->input('skills'));
             $employeesData = EmployeeDetails::where('deleted_at', null)
             ->with('userObj')
             // ->whereHas('employeeSkillsId')
             ->with(['employeeSkillsId' => function ($query) use($request) {
                 if($request->has('skills')){
-                    $query->whereIn('skill', [$request->input('skills')]);
+                    $skills = explode(',',$request->input('skills'));
+                    $query->whereIn('skill', $skills);
                 }
             }]);
             if($request->has('skills')){
