@@ -32,17 +32,19 @@ class EmployeeDetailsController extends Controller
             // dump('Java', 'PHP');
             // dd($request->input('skills'));
             $employeesData = EmployeeDetails::where('deleted_at', null)
-            ->with('userObj')
+            ->with('userObj');
             // ->whereHas('employeeSkillsId')
-            ->with(['employeeSkillsId' => function ($query) use($request) {
-                if($request->has('skills') && $request->input('skills')){
-                    $skills = explode(',',$request->input('skills'));
-                    $query->whereIn('skill', $skills);
-                }
-            }]);
             if($request->has('skills') && $request->input('skills')){
+                $employeesData->with(['employeeSkillsId' => function ($query) use($request) {
+                        $skills = explode(',',$request->input('skills'));
+                        $query->whereIn('skill', $skills);
+                }]);
                 $employeesData->whereHas('employeeSkillsId');
+            }else{
+                $employeesData->with('employeeSkillsId');
             }
+
+
             // $temp =$employeesData->get();
 
             // if($request->has('full_name')){
