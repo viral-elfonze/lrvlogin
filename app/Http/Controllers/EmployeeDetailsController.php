@@ -35,12 +35,12 @@ class EmployeeDetailsController extends Controller
             ->with('userObj')
             // ->whereHas('employeeSkillsId')
             ->with(['employeeSkillsId' => function ($query) use($request) {
-                if($request->has('skills')){
+                if($request->has('skills') && $request->input('skills')){
                     $skills = explode(',',$request->input('skills'));
                     $query->whereIn('skill', $skills);
                 }
             }]);
-            if($request->has('skills')){
+            if($request->has('skills') && $request->input('skills')){
                 $employeesData->whereHas('employeeSkillsId');
             }
             $temp =$employeesData->get();
