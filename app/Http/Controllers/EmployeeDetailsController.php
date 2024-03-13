@@ -29,27 +29,33 @@ class EmployeeDetailsController extends Controller
     public function getEmployeeDetails(Request $request)
     {
         try {
-
-
             $employeesData = EmployeeDetails::where('deleted_at', null)
-            ->with('employeeSkillsId')
-            // ->with(['employeeSkillsId' => function ($query) {
-            //     $query->whereIn('skill', ['Java','PHP']); // Example condition: amount greater than 1000
-            // }])
-            ->with('userObj')
-            // ->where('employee_code','ET1208')
-            // ->where('employee_skills_id.employee_id', '=', 1)
-            // ->join('employee_skill_matrix', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
-            // ->groupBy('employee_skill_matrix.employee_id')
-            // ->select('employee_details.*','')
-            // if ($request->has('sort_by')) {
-            //     $employeesData->orderBy($request->input('sort_by'), $request->input('sort_order', 'asc'));
-            // }
-            // $page = $request->input('page', 1); // Default page number is 1
-            // $items = $employeesData->paginate($request->input('per_page', 10), ['*'], 'page', $page);
-            ->get();
+                ->with('employeeSkillsId')
+                ->whereHas('employeeSkillsId', function ($query) {
+                    $query->whereIn('skill_id', function ($subQuery) {
+                        $subQuery->select('skill_id')
+                            ->from('skills')
+                            ->whereIn('skill', ['Java', 'PHP']);
+                    });
+                })
+                ->with(['employeeSkillsId' => function ($query) {
+                    $query->whereIn('skill', ['Java', 'PHP']); // Example condition: amount greater than 1000
+                }])
+                ->with('userObj')
+                // ->where('employee_code','ET1208')
+                // ->where('employee_skills_id.employee_id', '=', 1)
+                // ->join('employee_skill_matrix', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
+                // ->groupBy('employee_skill_matrix.employee_id')
+                // ->select('employee_details.*','')
+                // if ($request->has('sort_by')) {
+                //     $employeesData->orderBy($request->input('sort_by'), $request->input('sort_order', 'asc'));
+                // }
+                // $page = $request->input('page', 1); // Default page number is 1
+                // $items = $employeesData->paginate($request->input('per_page', 10), ['*'], 'page', $page);
+                ->get();
             // $employeesSkills = EmployeeSkillMatrix::join('employee_details', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
             // ->join('skills', 'employee_skill_matrix.skill_id', '=', 'skills.skill_id')
+
             //If employee data not found
             if (!$employeesData) {
                 return response()->json([
