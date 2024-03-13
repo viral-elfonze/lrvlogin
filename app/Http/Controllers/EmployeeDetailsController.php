@@ -30,18 +30,37 @@ class EmployeeDetailsController extends Controller
     {
         try {
             $employeesData = EmployeeDetails::where('deleted_at', null)
-                ->with('employeeSkillsId')
-                ->whereHas('employeeSkillsId', function ($query) {
-                    $query->whereIn('skill_id', function ($subQuery) {
-                        $subQuery->select('skill_id')
-                            ->from('skills')
-                            ->whereIn('skill', ['Java', 'PHP']);
-                    });
-                })
-                ->with(['employeeSkillsId' => function ($query) {
-                    $query->whereIn('skill', ['Java', 'PHP']); // Example condition: amount greater than 1000
-                }])
-                ->with('userObj')
+            ->with('userObj')
+            // ->whereHas('employeeSkillsId')
+            ->with(['employeeSkillsId' => function ($query) use($request) {
+                if($request->has('skills')){
+                    $query->whereIn('skill', [$request->input('skills')]);
+                }
+            }]);
+            if($request->has('skills')){
+                $employeesData->whereHas('employeeSkillsId');
+            }
+            $temp =$employeesData->get();
+
+            // if($request->has('full_name')){
+            //     // $employeesData->where('FullName','like', '%' . $request->input('full_name') . '%');
+            //     $employeesData->whereRaw("CONCAT(employee_firstname, ' ', employee_firstname, ' ', employee_firstname) LIKE '%".$request->has('full_name')."%'");
+            // }
+
+
+            // $employeesData = EmployeeDetails::where('deleted_at', null)
+            //     ->with('employeeSkillsId')
+            //     ->whereHas('employeeSkillsId', function ($query) {
+            //         $query->whereIn('skill_id', function ($subQuery) {
+            //             $subQuery->select('skill_id')
+            //                 ->from('skills')
+            //                 ->whereIn('skill', ['Java', 'PHP']);
+            //         });
+            //     })
+            //     ->with(['employeeSkillsId' => function ($query) {
+            //         $query->whereIn('skill', ['Java', 'PHP']); // Example condition: amount greater than 1000
+            //     }])
+            //     ->with('userObj')
                 // ->where('employee_code','ET1208')
                 // ->where('employee_skills_id.employee_id', '=', 1)
                 // ->join('employee_skill_matrix', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
@@ -52,23 +71,23 @@ class EmployeeDetailsController extends Controller
                 // }
                 // $page = $request->input('page', 1); // Default page number is 1
                 // $items = $employeesData->paginate($request->input('per_page', 10), ['*'], 'page', $page);
-                ->get();
+
             // $employeesSkills = EmployeeSkillMatrix::join('employee_details', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
             // ->join('skills', 'employee_skill_matrix.skill_id', '=', 'skills.skill_id')
 
             //If employee data not found
-            if (!$employeesData) {
+            if (!$temp) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Employees data not found.',
-                    'data' => $employeesData,
+                    'data' => $temp,
                 ]);
             }
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Employees data retrieved successfully.',
-                'data' => $employeesData
+                'data' => $temp
             ]);
         } catch (Exception $e) {
             return response()->json([
