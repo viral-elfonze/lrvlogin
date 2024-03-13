@@ -29,33 +29,29 @@ class EmployeeDetailsController extends Controller
     public function getEmployeeDetails(Request $request)
     {
         try {
-            $employeesData = EmployeeDetails::where('deleted_at', null);
-
-            if ($request->has('skills') && $request->input('skills')) {
-                $employeesData->whereHas('employeeSkillsId', function ($query) use ($request) {
-                    $skills = explode(',', $request->input('skills'));
-                    $query->whereIn('skill_id', function ($subQuery) use ($skills) {
-                        $subQuery->select('skill_id')
-                            ->from('skills')
-                            ->whereIn('skill', $skills);
-                    });
-                })->with(['employeeSkillsId' => function ($query) use ($request) {
-                    $skills = explode(',', $request->input('skills'));
-                    $query->whereIn('skill', $skills);
+            // dump('Java', 'PHP');
+            // dd($request->input('skills'));
+            $employeesData = EmployeeDetails::where('deleted_at', null)
+            ->with('userObj');
+            // ->whereHas('employeeSkillsId')
+            if($request->has('skills') && $request->input('skills')){
+                $employeesData->with(['employeeSkillsId' => function ($query) use($request) {
+                        $skills = explode(',',$request->input('skills'));
+                        $query->whereIn('skill', $skills);
                 }]);
-            } else {
+                $employeesData->whereHas('employeeSkillsId');
+            }else{
                 $employeesData->with('employeeSkillsId');
             }
 
-            $employeesData->with('userObj');
 
-            if ($request->has('full_name')) {
-                $fullName = trim(strtolower($request->input('full_name')));
-                if ($fullName !== '') {
-                    $employeesData->whereRaw("CONCAT(employee_firstname, ' ', COALESCE(employee_middlename, ''), ' ', employee_lastname) LIKE '%" . $fullName . "%'");
-                }
-            }
-            $temp = $employeesData->get();
+            // $temp =$employeesData->get();
+
+            // if($request->has('full_name')){
+            //     // $employeesData->where('FullName','like', '%' . $request->input('full_name') . '%');
+            //     $employeesData->whereRaw("CONCAT(employee_firstname, ' ', employee_firstname, ' ', employee_firstname) LIKE '%".$request->has('full_name')."%'");
+            // }
+
 
             // $employeesData = EmployeeDetails::where('deleted_at', null)
             //     ->with('employeeSkillsId')
@@ -70,18 +66,16 @@ class EmployeeDetailsController extends Controller
             //         $query->whereIn('skill', ['Java', 'PHP']); // Example condition: amount greater than 1000
             //     }])
             //     ->with('userObj')
-            // ->where('employee_code','ET1208')
-            // ->where('employee_skills_id.employee_id', '=', 1)
-            // ->join('employee_skill_matrix', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
-            // ->groupBy('employee_skill_matrix.employee_id')
-            // ->select('employee_details.*','')
-
-            if ($request->has('sort_by') && $request->input('sort_by') &&  $request->has('order')) {
-                $employeesData->orderBy($request->input('sort_by'), $request->input('sort_order', $request->input('order', 'asc')));
-            }
-
-            $page = $request->input('page', 1); // Default page number is 1
-            $temp = $employeesData->paginate($request->input('per_page', 10), ['*'], 'page', $page);
+                // ->where('employee_code','ET1208')
+                // ->where('employee_skills_id.employee_id', '=', 1)
+                // ->join('employee_skill_matrix', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
+                // ->groupBy('employee_skill_matrix.employee_id')
+                // ->select('employee_details.*','')
+                if ($request->has('sort_by') && $request->input('sort_by') &&  $request->has('order')) {
+                    $employeesData->orderBy($request->input('sort_by'), $request->input('sort_order', $request->input('order', 'asc')));
+                }
+                $page = $request->input('page', 1); // Default page number is 1
+                $temp = $employeesData->paginate($request->input('per_page', 10), ['*'], 'page', $page);
 
             // $employeesSkills = EmployeeSkillMatrix::join('employee_details', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
             // ->join('skills', 'employee_skill_matrix.skill_id', '=', 'skills.skill_id')
