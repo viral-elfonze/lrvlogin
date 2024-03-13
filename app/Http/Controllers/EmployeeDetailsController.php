@@ -23,6 +23,44 @@ class EmployeeDetailsController extends Controller
         $this->ImageService = $ImageService;
     }
 
+    public function getEmpDe(Request $request){
+        try {
+            $employeesData = EmployeeDetails::where('deleted_at', null);
+            // $employeesData->join('employee_skill_matrix', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id');
+            // $employeesData->select('employee_details.*');
+            // $employeesData->groupBy('employee_skill_matrix.employee_id');
+
+            if ($request->has('sort_by') && $request->input('sort_by') &&  $request->has('order')) {
+                $employeesData->orderBy($request->input('sort_by'), $request->input('sort_order', $request->input('order', 'asc')));
+            }
+
+            $page = $request->input('page', 1); // Default page number is 1
+            $temp = $employeesData->paginate($request->input('per_page', 10), ['*'], 'page', $page);
+
+            // $employeesSkills = EmployeeSkillMatrix::join('employee_details', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
+            // ->join('skills', 'employee_skill_matrix.skill_id', '=', 'skills.skill_id')
+
+            //If employee data not found
+            if (!$temp) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Employees data not found.',
+                    'data' => $temp,
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Employees data retrieved successfully.',
+                'data' => $temp
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
     /**
      * Display a listing of the resource.
      */
