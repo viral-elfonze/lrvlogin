@@ -60,7 +60,7 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::get('/employee/skills', [EmployeeDetailsController::class, 'getEmployeeSkills'])->name('employee.skills');
     Route::get('verify-employee/{employee_id}', [EmployeeDetailsController::class, 'verifyemployee_id'])->name('employee.verify.id');
     Route::get('verify-employee-code/{employee_code}', [EmployeeDetailsController::class, 'verifyemployee_code'])->name('employee.verify.code');
-    Route::get('/employee/list', [EmployeeDetailsController::class, 'getEmployeeDetails'])->name('employee.list');
+    Route::any('/employee/list', [EmployeeDetailsController::class, 'getEmployeeDetails'])->name('employee.list');
     Route::post('/employee/store', [EmployeeDetailsController::class, 'saveEmployeeDetail'])->name('employee.store');
     Route::get('/employee/show/{employee_id}', [EmployeeDetailsController::class, 'showEmployeeDetail'])->name('employee.show');
     Route::post('/employee/update/{employee_id}', [EmployeeDetailsController::class, 'updateEmployeeDetail'])->name('employee.update');
