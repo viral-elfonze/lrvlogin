@@ -43,7 +43,7 @@ class EmployeeDetailsController extends Controller
             if($request->has('skills') && $request->input('skills')){
                 $employeesData->whereHas('employeeSkillsId');
             }
-            $temp =$employeesData->get();
+            // $temp =$employeesData->get();
 
             // if($request->has('full_name')){
             //     // $employeesData->where('FullName','like', '%' . $request->input('full_name') . '%');
@@ -69,11 +69,11 @@ class EmployeeDetailsController extends Controller
                 // ->join('employee_skill_matrix', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
                 // ->groupBy('employee_skill_matrix.employee_id')
                 // ->select('employee_details.*','')
-                // if ($request->has('sort_by')) {
-                //     $employeesData->orderBy($request->input('sort_by'), $request->input('sort_order', 'asc'));
-                // }
-                // $page = $request->input('page', 1); // Default page number is 1
-                // $items = $employeesData->paginate($request->input('per_page', 10), ['*'], 'page', $page);
+                if ($request->has('sort_by') && $request->input('sort_by') &&  $request->has('order')) {
+                    $employeesData->orderBy($request->input('sort_by'), $request->input('sort_order', $request->input('order', 'asc')));
+                }
+                $page = $request->input('page', 1); // Default page number is 1
+                $temp = $employeesData->paginate($request->input('per_page', 10), ['*'], 'page', $page);
 
             // $employeesSkills = EmployeeSkillMatrix::join('employee_details', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
             // ->join('skills', 'employee_skill_matrix.skill_id', '=', 'skills.skill_id')
