@@ -77,10 +77,7 @@ class EmployeeDetailsController extends Controller
                             ->from('skills')
                             ->whereIn('skill', $skills);
                     });
-                })->with(['employeeSkillsId' => function ($query) use ($request) {
-                    $skills = explode(',', $request->input('skills'));
-                    $query->whereIn('skill', $skills);
-                }]);
+                });
             } else {
                 $employeesData->with('employeeSkillsId');
             }
