@@ -23,7 +23,8 @@ class EmployeeDetailsController extends Controller
         $this->ImageService = $ImageService;
     }
 
-    public function getEmpDe(Request $request){
+    public function getEmpDe(Request $request)
+    {
         try {
             $employeesData = EmployeeDetails::where('deleted_at', null);
             // $employeesData->join('employee_skill_matrix', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id');
@@ -77,7 +78,7 @@ class EmployeeDetailsController extends Controller
                             ->from('skills')
                             ->whereIn('skill', $skills);
                     });
-                });
+                })->with(['employeeSkillsId']);
             } else {
                 $employeesData->with('employeeSkillsId');
             }

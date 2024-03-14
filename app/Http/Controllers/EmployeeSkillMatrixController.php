@@ -91,7 +91,7 @@ class EmployeeSkillMatrixController extends Controller
             $savedImageFile = '';
             $empSkillObj = EmployeeSkillMatrix::create($request->all());
 
-            if ($request->input('is_certificate')) {
+            if ($request->input('is_certificate') && !empty($request->input('certificates'))) {
                 foreach ($request->input('certificates') as $index => $certificateData) {
                     $certificateValidator = Validator::make($certificateData, [
                         'certificates.*.name' => 'nullable|string',
@@ -173,7 +173,7 @@ class EmployeeSkillMatrixController extends Controller
 
             $empSkillObj = $employeeSkills->update($request->all());
 
-            if ($empSkillObj && $request->input('is_certificate')) {
+            if ($request->input('is_certificate') && !empty($request->input('certificates'))) {
                 foreach ($request->input('certificates') as $index => $certificateData) {
                     $certificateValidator = Validator::make($certificateData, [
                         'certificates.*.name' => 'nullable|string',
@@ -275,7 +275,7 @@ class EmployeeSkillMatrixController extends Controller
     public function getMySkills($employee_id)
     {
         try {
-            $employeeSkillMatrix = EmployeeSkillMatrix::with(['skills'])->where('employee_id', $employee_id)->orderBy('competency','desc')->get();
+            $employeeSkillMatrix = EmployeeSkillMatrix::with(['skills'])->where('employee_id', $employee_id)->orderBy('competency', 'desc')->get();
 
             if (!$employeeSkillMatrix) {
                 return response()->json(['status' => 'error', 'message' => 'My skills data not found', 'data' => []]);
@@ -312,7 +312,7 @@ class EmployeeSkillMatrixController extends Controller
         //         'employee_certifications.*'
         //     )->where('employee_details.employee_id', $id);
 
-            $employeesSkills = EmployeeSkillMatrix::with(['skills','employeeCertifications'])->where('employee_skill_matrix.employee_id', $id);
+        $employeesSkills = EmployeeSkillMatrix::with(['skills', 'employeeCertifications'])->where('employee_skill_matrix.employee_id', $id);
         // Apply sorting
         if ($request->has('sort_by')) {
             $employeesSkills->orderBy($request->input('sort_by'), $request->input('sort_order', 'asc'));
