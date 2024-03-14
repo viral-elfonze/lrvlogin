@@ -318,15 +318,25 @@ class EmployeeSkillMatrixController extends Controller
             $employeesSkills->orderBy($request->input('sort_by'), $request->input('sort_order', 'asc'));
         }
 
-        // Apply filter
+
+        $employeesSkills = EmployeeSkillMatrix::with(['skills','employeeCertifications'])->where('employee_skill_matrix.employee_id', $id);
         if ($request->has('skill_set')) {
             $employeesSkills->whereHas('skills', function ($query) use ($request) {
                 $query->where('skill', 'like', '%' . $request->input('skill_set') . '%');
             });
         }
+        // Apply sorting
+        if ($request->has('sort_by')) {
+            $employeesSkills->orderBy($request->input('sort_by'),$request->input('sort_order', $request->input('order', 'asc')));
+        }
+
+        $page = $request->input('page', 1); // Default page number is 1
+        $employees = $employeesSkills->paginate($request->input('per_page', 10), ['*'], 'page', $page);
+
+
 
         // Retrieve the filtered employees data
-        $employees = $employeesSkills->get();
+        // $employees = $employeesSkills->get();
 
         // Return JSON response with a message
         return response()->json([

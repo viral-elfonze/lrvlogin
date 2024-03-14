@@ -113,7 +113,7 @@ class EmployeeDetailsController extends Controller
             // ->select('employee_details.*','')
 
             if ($request->has('sort_by') && $request->input('sort_by') &&  $request->has('order')) {
-                $employeesData->orderBy($request->input('sort_by'), $request->input('sort_order', $request->input('order', 'asc')));
+                $employeesData->orderBy($request->input('sort_by'), $request->input('order', 'asc'));
             }
 
             $page = $request->input('page', 1); // Default page number is 1
