@@ -24,7 +24,7 @@ class EmployeeCertification extends Model
      * @var array
      */
     protected $fillable = [
-        'employee_skill_matrix_id', 'name', 'number', 'description', 'issue_date', 'expiry_date', 'certification_image'
+        'id', 'employee_skill_matrix_id', 'name', 'number', 'description', 'issue_date', 'expiry_date', 'certification_image'
     ];
 
     /**
