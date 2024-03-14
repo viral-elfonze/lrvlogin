@@ -298,20 +298,21 @@ class EmployeeSkillMatrixController extends Controller
     public function getEmployeeSkillWithFilter(Request $request, $id)
     {
         // Start with a query to retrieve all employees kill matrix
-        $employeesSkills = EmployeeSkillMatrix::join('employee_details', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
-            ->join('skills', 'employee_skill_matrix.skill_id', '=', 'skills.skill_id')
-            ->join('employee_certifications', 'employee_certifications.employee_skill_matrix_id', '=', 'employee_skill_matrix.id')
-            ->select(
-                'skills.skill',
-                'employee_details.employee_id',
-                'employee_details.employee_firstname',
-                'employee_details.employee_lastname',
-                'employee_details.resumelink',
-                'employee_details.relevantexp',
-                'employee_details.totalexp',
-                'employee_certifications.*'
-            )->where('employee_details.employee_id', $id);
+        // $employeesSkills = EmployeeSkillMatrix::join('employee_details', 'employee_skill_matrix.employee_id', '=', 'employee_details.employee_id')
+        //     ->join('skills', 'employee_skill_matrix.skill_id', '=', 'skills.skill_id')
+        //     ->join('employee_certifications', 'employee_certifications.employee_skill_matrix_id', '=', 'employee_skill_matrix.id')
+        //     ->select(
+        //         'skills.skill',
+        //         'employee_details.employee_id',
+        //         'employee_details.employee_firstname',
+        //         'employee_details.employee_lastname',
+        //         'employee_details.resumelink',
+        //         'employee_details.relevantexp',
+        //         'employee_details.totalexp',
+        //         'employee_certifications.*'
+        //     )->where('employee_details.employee_id', $id);
 
+            $employeesSkills = EmployeeSkillMatrix::with(['skills','employeeCertifications'])->where('employee_skill_matrix.employee_id', $id);
         // Apply sorting
         if ($request->has('sort_by')) {
             $employeesSkills->orderBy($request->input('sort_by'), $request->input('sort_order', 'asc'));
