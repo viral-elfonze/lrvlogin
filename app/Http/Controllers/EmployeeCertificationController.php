@@ -204,7 +204,7 @@ class EmployeeCertificationController extends Controller
                     }
                 }
 
-                return response()->json([['status' => 'success', 'message' => 'Employee certificates fetched successfully'], 'data' => $data]);
+                return response()->json([['status' => 'success', 'message' => 'Employee certificates fetched successfully'], 'data' => $data,'employeeCertificates'=>$employeeCertificates]);
             }
         } catch (Exception $e) {
             return response()->json([
