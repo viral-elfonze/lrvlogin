@@ -230,9 +230,11 @@ class EmployeeSkillMatrixController extends Controller
             // Find employee by employee ID column
             $employeeSkill = EmployeeSkillMatrix::with('employeeCertifications')->where('id', $id)->first();
 
-            foreach ($employeeSkill['employeeCertifications'] as $certificateData) {
-                // Delete employee certificate record
-                $certificateData->delete();
+            if (!empty($employeeSkill['employeeCertifications'])) {
+                foreach ($employeeSkill['employeeCertifications'] as $certificateData) {
+                    // Delete employee certificate record
+                    $certificateData->delete();
+                }
             }
 
             // If employee skill not found, return error response
