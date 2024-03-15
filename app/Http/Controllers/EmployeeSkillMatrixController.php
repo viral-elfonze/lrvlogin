@@ -239,6 +239,7 @@ class EmployeeSkillMatrixController extends Controller
      */
     public function removeEmployeeSkillMatrix($id)
     {
+        dd("tse");
         try {
             // Find employee by employee ID column
             $employeeSkill = EmployeeSkillMatrix::with('employeeCertifications')->where('id', $id)->first();
