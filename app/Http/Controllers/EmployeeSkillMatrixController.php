@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Services\ImageService;
 use App\Models\EmployeeSkillMatrix;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class EmployeeSkillMatrixController extends Controller
 {
@@ -68,7 +69,13 @@ class EmployeeSkillMatrixController extends Controller
     {
         try {
             $rules = [
-                'skill_id' => 'required|exists:skills,skill_id',
+                'skill_id' => [
+                    'required',
+                    'exists:skills,skill_id',
+                    Rule::unique('employee_skill_matrix')->where(function ($query) use ($request) {
+                        return ($query->where('skill_id', $request->input('skill_id')) && $query->where('employee_id', $request->input('employee_id')));
+                    }),
+                ],
                 'employee_id' => 'required|exists:employee_details,employee_id',
                 'relevantexp' => 'required|integer|min:0',
                 'competency' => 'required',
@@ -146,7 +153,13 @@ class EmployeeSkillMatrixController extends Controller
             $employeeSkills = EmployeeSkillMatrix::with('employeeCertifications')->where('id', $employeeSkillId)->first();
 
             $rules = [
-                'skill_id' => 'required|exists:skills,skill_id',
+                'skill_id' => [
+                    'required',
+                    'exists:skills,skill_id',
+                    Rule::unique('employee_skill_matrix')->where(function ($query) use ($request) {
+                        return ($query->where('skill_id', $request->input('skill_id')) && $query->where('employee_id', $request->input('employee_id')));
+                    }),
+                ],
                 'employee_id' => 'required|exists:employee_details,employee_id',
                 'relevantexp' => 'required|integer|min:0',
                 'competency' => 'required',
