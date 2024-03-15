@@ -228,7 +228,14 @@ class EmployeeSkillMatrixController extends Controller
     {
         try {
             // Find employee by employee ID column
-            $employeeSkill = EmployeeSkillMatrix::where('id', $id)->first();
+            $employeeSkill = EmployeeSkillMatrix::with('employeeCertifications')->where('id', $id)->first();
+
+            if (!empty($employeeSkill['employeeCertifications'])) {
+                foreach ($employeeSkill['employeeCertifications'] as $certificateData) {
+                    // Delete employee certificate record
+                    $certificateData->delete();
+                }
+            }
 
             // If employee skill not found, return error response
             if (!$employeeSkill) {
@@ -319,7 +326,7 @@ class EmployeeSkillMatrixController extends Controller
         }
 
 
-        $employeesSkills = EmployeeSkillMatrix::with(['skills','employeeCertifications'])->where('employee_skill_matrix.employee_id', $id);
+        $employeesSkills = EmployeeSkillMatrix::with(['skills', 'employeeCertifications'])->where('employee_skill_matrix.employee_id', $id);
         if ($request->has('skill_set')) {
             $employeesSkills->whereHas('skills', function ($query) use ($request) {
                 $query->where('skill', 'like', '%' . $request->input('skill_set') . '%');
@@ -327,7 +334,7 @@ class EmployeeSkillMatrixController extends Controller
         }
         // Apply sorting
         if ($request->has('sort_by')) {
-            $employeesSkills->orderBy($request->input('sort_by'),$request->input('sort_order', $request->input('order', 'asc')));
+            $employeesSkills->orderBy($request->input('sort_by'), $request->input('sort_order', $request->input('order', 'asc')));
         }
 
         $page = $request->input('page', 1); // Default page number is 1
