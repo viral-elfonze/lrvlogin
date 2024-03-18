@@ -65,7 +65,7 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::post('/employee/store', [EmployeeDetailsController::class, 'saveEmployeeDetail'])->name('employee.store');
     Route::get('/employee/show/{employee_id}', [EmployeeDetailsController::class, 'showEmployeeDetail'])->name('employee.show');
     Route::post('/employee/update/{employee_id}', [EmployeeDetailsController::class, 'updateEmployeeDetail'])->name('employee.update');
-    Route::delete('/employee/delete/{employee_id}', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
+    Route::get('/employee/delete/{employee_id}', [EmployeeDetailsController::class, 'removeEmployeeDetail'])->name('employee.delete');
 
     Route::post('/employee/skills/list', [EmployeeDetailsController::class, 'getEmployeeDetailsWithFilter'])->name('employee.skills.list');
 
