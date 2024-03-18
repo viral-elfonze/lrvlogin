@@ -149,6 +149,8 @@ class EmployeeSkillMatrixController extends Controller
     public function updateEmployeeSkillMatrix(Request $request, $employeeSkillId)
     {
         try {
+            $savedImageFile = '';
+
             // Find employee by employee skill ID column
             $employeeSkills = EmployeeSkillMatrix::with('employeeCertifications')->where('id', $employeeSkillId)->first();
 
@@ -180,7 +182,7 @@ class EmployeeSkillMatrixController extends Controller
 
             $empSkillObj = $employeeSkills->update($request->all());
 
-            if ($request->input('is_certificate') && !empty($request->input('certificates'))) {
+            if ($empSkillObj && $request->input('is_certificate') && !empty($request->input('certificates'))) {
                 foreach ($request->input('certificates') as $index => $certificateData) {
                     $certificateValidator = Validator::make($certificateData, [
                         'certificates.*.name' => 'nullable|string',
