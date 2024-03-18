@@ -32,6 +32,9 @@ class UserController extends Controller
     {
         return view('home');
     }
+    public function test(Request $request){
+        dd("tes");
+    }
     public function userdetails()
     {
 
