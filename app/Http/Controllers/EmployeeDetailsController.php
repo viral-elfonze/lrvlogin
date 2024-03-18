@@ -391,7 +391,7 @@ class EmployeeDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function removeEmployeeDetail($id)
+    public function removeEmployeeDetail(Request $request,$id)
     {
         try {
             // Find employee by employee ID column
