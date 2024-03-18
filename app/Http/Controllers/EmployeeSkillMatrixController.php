@@ -155,7 +155,7 @@ class EmployeeSkillMatrixController extends Controller
             $employeeSkills = EmployeeSkillMatrix::with('employeeCertifications')->where('id', $employeeSkillId)->first();
 
             $rules = [
-                'skill_id' => 'required','exists:skills,skill_id',
+                'skill_id' => 'required', 'exists:skills,skill_id',
                 'employee_id' => 'required|exists:employee_details,employee_id',
                 'relevantexp' => 'required|integer|min:0',
                 'competency' => 'required',
@@ -180,9 +180,10 @@ class EmployeeSkillMatrixController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'Employee skill matrix data not found', 'data' => []]);
             }
 
-            $empSkillObj = $employeeSkills->update($request->all());
+            // Update employee skills
+            $employeeSkills->update($request->only(['skill_id', 'employee_id', 'relevantexp', 'competency', 'is_certificate']));
 
-            if ($empSkillObj && $request->input('is_certificate') && !empty($request->input('certificates'))) {
+            if ($request->input('is_certificate') && !empty($request->input('certificates'))) {
                 foreach ($request->input('certificates') as $index => $certificateData) {
                     $certificateValidator = Validator::make($certificateData, [
                         'certificates.*.name' => 'nullable|string',
@@ -270,7 +271,7 @@ class EmployeeSkillMatrixController extends Controller
     public function showEmployeeSkillMatrix($id)
     {
         try {
-            $employeeSkillMatrix = EmployeeSkillMatrix::with(['Skills', 'EmployeeDetails','employeeCertifications'])->where('id', $id)->first();
+            $employeeSkillMatrix = EmployeeSkillMatrix::with(['Skills', 'EmployeeDetails', 'employeeCertifications'])->where('id', $id)->first();
 
             if (!$employeeSkillMatrix) {
                 return response()->json(['status' => 'error', 'message' => 'Employee skill data not found', 'data' => []]);
