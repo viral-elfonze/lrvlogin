@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['cors','auth:sanctum'])->group(function () {
 
     Route::get('/userdetails', [UserController::class, 'userdetails'])->name('user.userdetails');
-    Route::delete('/userdetails/test', [UserController::class, 'test'])->name('user.test');
+    Route::get('/userdetails/test', [UserController::class, 'test'])->name('user.test');
     Route::get('/locations', [EmployeeDetailsController::class, 'getLocations'])->name('locations.list');
     Route::get('/user/logout', [UserController::class, 'logout'])->name('user.lougout');
     Route::post('/user/list', [UserController::class, 'list'])->name('user.list');
