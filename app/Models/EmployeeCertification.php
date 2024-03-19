@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\ImageService;
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class EmployeeCertification extends Model
 {
     use HasFactory;
+
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
