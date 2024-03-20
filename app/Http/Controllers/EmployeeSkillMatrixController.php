@@ -202,35 +202,38 @@ class EmployeeSkillMatrixController extends Controller
                         ]);
                     }
 
-                    if ($request->hasFile("certificates.$index.certification_image") && $request->file("certificates.$index.certification_image")->isValid()) {
-                        $img = $request->file("certificates.$index.certification_image");
-                        $savedImageFile = $this->saveCertificationImage($img, 'certification_image');
-                    }
+                    if ($certificateData['id'] && isset($certificateData['id']) && $certificateData['id'] !== null) {
+                        $employeeCertificate = EmployeeCertification::find($certificateData['id']);
+                        $employeeCertificate->employee_skill_matrix_id = $employeeSkillId;
+                        $employeeCertificate->name = $certificateData['name'];
+                        $employeeCertificate->number = $certificateData['number'];
+                        $employeeCertificate->description = $certificateData['description'];
+                        $employeeCertificate->issue_date = $certificateData['issue_date'];
+                        $employeeCertificate->expiry_date = $certificateData['expiry_date'];
 
-                    // Find the certificate by its ID
-                    $employeeCertificate = $employeeSkills->employeeCertifications->get($index);
+                        if ($request->hasFile("certificates.$index.certification_image") && $request->file("certificates.$index.certification_image")->isValid()) {
+                            $img = $request->file("certificates.$index.certification_image");
+                            $savedImageFile = $this->saveCertificationImage($img, 'certification_image');
+                            $employeeCertificate->certification_image = $savedImageFile->getData()->data->id;
+                        }
 
-                    if ($employeeCertificate) {
-                        $employeeCertificate->update([
-                            $employeeCertificate->employee_skill_matrix_id = (int)$employeeSkillId,
-                            $employeeCertificate->name = $certificateData['name'],
-                            $employeeCertificate->number = $certificateData['number'],
-                            $employeeCertificate->description = $certificateData['description'],
-                            $employeeCertificate->issue_date = $certificateData['issue_date'],
-                            $employeeCertificate->expiry_date = $certificateData['expiry_date'],
-                            $employeeCertificate->certification_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null
-                        ]);
+                        $employeeCertificate->update();
                     } else {
-                        $employeeCertificate = new EmployeeCertification();
-                        $employeeCertificate->save([
-                            $employeeCertificate->employee_skill_matrix_id = (int)$employeeSkillId,
-                            $employeeCertificate->name = $certificateData['name'],
-                            $employeeCertificate->number = $certificateData['number'],
-                            $employeeCertificate->description = $certificateData['description'],
-                            $employeeCertificate->issue_date = $certificateData['issue_date'],
-                            $employeeCertificate->expiry_date = $certificateData['expiry_date'],
-                            $employeeCertificate->certification_image = ($savedImageFile) ? $savedImageFile->getData()->data->id : null
-                        ]);
+                        $employeeNewCertificate = new EmployeeCertification();
+                        $employeeNewCertificate->employee_skill_matrix_id = (int)$employeeSkillId;
+                        $employeeNewCertificate->name = $certificateData['name'];
+                        $employeeNewCertificate->number = $certificateData['number'];
+                        $employeeNewCertificate->description = $certificateData['description'];
+                        $employeeNewCertificate->issue_date = $certificateData['issue_date'];
+                        $employeeNewCertificate->expiry_date = $certificateData['expiry_date'];
+
+                        if ($request->hasFile("certificates.$index.certification_image") && $request->file("certificates.$index.certification_image")->isValid()) {
+                            $img = $request->file("certificates.$index.certification_image");
+                            $savedImageFile = $this->saveCertificationImage($img, 'certification_image');
+                            $employeeNewCertificate->certification_image = $savedImageFile->getData()->data->id;
+                        }
+
+                        $employeeNewCertificate->save();
                     }
                 }
             }
