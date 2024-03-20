@@ -41,16 +41,20 @@ class ImageService
     }
     public function getImagePath($imageId)
     {
+        if($imageId){
+            $imageDetail = ImageMaster::where('id',$imageId)->first();
+            // Get the path to the image in the storage/app/public/images directory
+            $path = env('IMAGE_PATH') . env('IMAGE_UPLOAD') .$imageDetail->path."/".$imageDetail->filename;
+            return $path;
 
-        $imageDetail = ImageMaster::where('id',$imageId)->first();
-        // Get the path to the image in the storage/app/public/images directory
-        $path = env('IMAGE_PATH') . env('IMAGE_UPLOAD') .$imageDetail->path."/".$imageDetail->filename;
-        return $path;
-        // Check if the file exists
-        if (Storage::exists($path)) {
-            return storage_path('app/' . $path);
-        } else {
-            return null;
+            // Check if the file exists
+            if (Storage::exists($path)) {
+                return storage_path('app/' . $path);
+            } else {
+                return null;
+            }
+        }else{
+            return '';
         }
     }
 }

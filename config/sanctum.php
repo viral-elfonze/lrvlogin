@@ -18,7 +18,7 @@ return [
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
         'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
-        'https://lrvlogin.kilter.fun',
+        'https://lrvlogin.kilter.fun','https://talentgrid.elfonze.com/apis',
         Sanctum::currentApplicationUrlWithPort()
     ))),
 
