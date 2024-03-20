@@ -184,6 +184,16 @@ class EmployeeSkillMatrixController extends Controller
             $employeeSkills->update($request->only(['skill_id', 'employee_id', 'relevantexp', 'competency']));
 
             if ($request->input('is_certificate') && !empty($request->input('certificates'))) {
+                $certiARy = [];
+                foreach ($request->input('certificates') as $index => $certificateData) {
+                    if ($certificateData['id'] && isset($certificateData['id']) && $certificateData['id'] !== null) {
+                        $certiARy[] = $certificateData['id'];
+                    }
+                }
+                //delete from certi
+                EmployeeCertification::where('employee_skill_matrix_id', $employeeSkillId)
+                ->whereNotIn('id',$certiARy)->delete();
+
                 foreach ($request->input('certificates') as $index => $certificateData) {
                     $certificateValidator = Validator::make($certificateData, [
                         'certificates.*.name' => 'nullable|string',
@@ -202,7 +212,9 @@ class EmployeeSkillMatrixController extends Controller
                         ]);
                     }
 
+
                     if ($certificateData['id'] && isset($certificateData['id']) && $certificateData['id'] !== null) {
+                        $certiARy[] = $certificateData['id'];
                         $employeeCertificate = EmployeeCertification::find($certificateData['id']);
                         $employeeCertificate->employee_skill_matrix_id = $employeeSkillId;
                         $employeeCertificate->name = $certificateData['name'];
@@ -218,6 +230,7 @@ class EmployeeSkillMatrixController extends Controller
                         }
 
                         $employeeCertificate->update();
+
                     } else {
                         $employeeNewCertificate = new EmployeeCertification();
                         $employeeNewCertificate->employee_skill_matrix_id = (int)$employeeSkillId;
@@ -236,6 +249,7 @@ class EmployeeSkillMatrixController extends Controller
                         $employeeNewCertificate->save();
                     }
                 }
+
             }
 
             // Return success response after saving employee skill matrix data
