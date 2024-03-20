@@ -74,7 +74,7 @@ class EmployeeSkillMatrixController extends Controller
                     'exists:skills,skill_id',
                     Rule::unique('employee_skill_matrix')->where(function ($query) use ($request) {
                         return ($query->where('skill_id', $request->input('skill_id')) && $query->where('employee_id', $request->input('employee_id')));
-                    }),
+                    })->where('deleted_at', null),
                 ],
                 'employee_id' => 'required|exists:employee_details,employee_id',
                 'relevantexp' => 'required|integer|min:0',
