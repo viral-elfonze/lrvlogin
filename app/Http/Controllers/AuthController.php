@@ -99,7 +99,7 @@ class AuthController extends Controller
         ];
 
         return response('', Response::HTTP_FOUND)
-        ->header('Location', 'http://localhost:3000/login?token='.$data['token']);
+        ->header('Location', env('AUTH_HEADER').$data['token']);
 
 
         return response()->json($response, 200);
