@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
+
 Route::middleware(['cors','auth:sanctum'])->group(function () {
 
     Route::get('/userdetails', [UserController::class, 'userdetails'])->name('user.userdetails');
@@ -71,6 +72,8 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
     Route::post('/employee/skills/list', [EmployeeDetailsController::class, 'getEmployeeDetailsWithFilter'])->name('employee.skills.list');
 
     Route::get('/all/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
+    Route::get('/all/skillsCategory', [EmployeeSkillMatrixController::class, 'getAllSkillsCategory'])->name('skills.Category');
+
     Route::post('/employee-skill/store', [EmployeeSkillMatrixController::class, 'saveEmployeeSkillMatrix'])->name('employee.skill.store');
     Route::get('/employee-skill/show/{employee_skill_matrix_id}', [EmployeeSkillMatrixController::class, 'showEmployeeSkillMatrix'])->name('employee.skill.show');
     Route::get('/my-skills/{employee_id}', [EmployeeSkillMatrixController::class, 'getMySkills'])->name('my.skills');

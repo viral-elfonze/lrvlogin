@@ -50,6 +50,30 @@ class EmployeeSkillMatrixController extends Controller
             ]);
         }
     }
+    public function getAllSkillsCategory()
+    {
+        try {
+            // Retrieve all skills from the database
+            $skills = Skills::all()->unique('category');
+
+            // If skill not found, return error response
+            if (!$skills) {
+                return response()->json(['status' => 'error', 'message' => 'Skills not found', 'data' => []]);
+            }
+
+            // Return JSON response with a message
+            return response()->json([
+                'status' => 'success',
+                'message' => 'All skills data retrieved successfully.',
+                'data' => $skills,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 
     /**
      * Store a newly created employee image or employee resume.

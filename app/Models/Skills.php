@@ -24,7 +24,7 @@ class Skills extends Model
      * @var array
      */
     protected $fillable = [
-        'role_id', 'user_id'
+        'role_id', 'user_id','category'
     ];
 
     /**
