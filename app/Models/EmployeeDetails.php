@@ -57,7 +57,7 @@ class EmployeeDetails extends Model
     }
     public function userObj()
     {
-        return $this->hasOne(User::class,'id');
+        return $this->hasOne(User::class,'id','user_id');
     }
     public function employeeSkillsId()
     {

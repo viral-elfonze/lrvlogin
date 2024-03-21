@@ -73,10 +73,33 @@ class EmployeeDetailsController extends Controller
             if ($request->has('skills') && $request->input('skills')) {
                 $employeesData->whereHas('employeeSkillsId', function ($query) use ($request) {
                     $skills = explode(',', $request->input('skills'));
-                    $query->whereIn('skill_id', function ($subQuery) use ($skills) {
+                    $category = null;
+                    if($request->has('category') && $request->input('category')){
+                        $category = explode(',', $request->input('category'));
+                    }
+                    $query->whereIn('skill_id', function ($subQuery) use ($skills,$category) {
                         $subQuery->select('skill_id')
                             ->from('skills')
                             ->whereIn('skill', $skills);
+                        if($category){
+                            $subQuery->orWhereIn('category', $skills);
+                        }
+                    });
+                })->with(['employeeSkillsId']);
+            } else if ($request->has('category') && $request->input('category')) {
+                $employeesData->whereHas('employeeSkillsId', function ($query) use ($request) {
+                    $category = explode(',', $request->input('category'));
+                    $skills = null;
+                    if($request->has('skills') && $request->input('skills')){
+                        $skills = explode(',', $request->input('skills'));
+                    }
+                    $query->whereIn('skill_id', function ($subQuery) use ($category,$skills) {
+                        $subQuery->select('skill_id')
+                            ->from('skills')
+                            ->whereIn('category', $category);
+                        if($skills){
+                            $subQuery->orWhereIn('skill', $skills);
+                        }
                     });
                 })->with(['employeeSkillsId']);
             } else {
