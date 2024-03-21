@@ -71,7 +71,7 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
 
     Route::post('/employee/skills/list', [EmployeeDetailsController::class, 'getEmployeeDetailsWithFilter'])->name('employee.skills.list');
 
-    Route::get('/all/skills', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
+    Route::get('/all/skills/{category_name}', [EmployeeSkillMatrixController::class, 'getAllSkills'])->name('skills.list');
     Route::get('/all/skillsCategory', [EmployeeSkillMatrixController::class, 'getAllSkillsCategory'])->name('skills.Category');
 
     Route::post('/employee-skill/store', [EmployeeSkillMatrixController::class, 'saveEmployeeSkillMatrix'])->name('employee.skill.store');

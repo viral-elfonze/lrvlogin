@@ -26,11 +26,17 @@ class EmployeeSkillMatrixController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAllSkills()
+    public function getAllSkills($category_name)
     {
+
+
         try {
             // Retrieve all skills from the database
-            $skills = Skills::all();
+            if($category_name !="all"){
+                $skills = Skills::where('category', 'like', '%' . $category_name . '%')->get();
+            }else{
+                $skills = Skills::all();
+            }
 
             // If skill not found, return error response
             if (!$skills) {
