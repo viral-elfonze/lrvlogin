@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Services\ImageService;
 use App\Models\EmployeeDetails;
 use App\Models\EmployeeSkillMatrix;
+use App\Rules\TotalExperienceRule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -74,14 +75,14 @@ class EmployeeDetailsController extends Controller
                 $employeesData->whereHas('employeeSkillsId', function ($query) use ($request) {
                     $skills = explode(',', $request->input('skills'));
                     $category = null;
-                    if($request->has('category') && $request->input('category')){
+                    if ($request->has('category') && $request->input('category')) {
                         $category = explode(',', $request->input('category'));
                     }
-                    $query->whereIn('skill_id', function ($subQuery) use ($skills,$category) {
+                    $query->whereIn('skill_id', function ($subQuery) use ($skills, $category) {
                         $subQuery->select('skill_id')
                             ->from('skills')
                             ->whereIn('skill', $skills);
-                        if($category){
+                        if ($category) {
                             $subQuery->orWhereIn('category', $skills);
                         }
                     });
@@ -90,14 +91,14 @@ class EmployeeDetailsController extends Controller
                 $employeesData->whereHas('employeeSkillsId', function ($query) use ($request) {
                     $category = explode(',', $request->input('category'));
                     $skills = null;
-                    if($request->has('skills') && $request->input('skills')){
+                    if ($request->has('skills') && $request->input('skills')) {
                         $skills = explode(',', $request->input('skills'));
                     }
-                    $query->whereIn('skill_id', function ($subQuery) use ($category,$skills) {
+                    $query->whereIn('skill_id', function ($subQuery) use ($category, $skills) {
                         $subQuery->select('skill_id')
                             ->from('skills')
                             ->whereIn('category', $category);
-                        if($skills){
+                        if ($skills) {
                             $subQuery->orWhereIn('skill', $skills);
                         }
                     });
@@ -218,9 +219,9 @@ class EmployeeDetailsController extends Controller
             $savedResume = '';
 
             $rules = [
-                'employee_firstname' => 'required',
-                'employee_middlename' => 'nullable',
-                'employee_lastname' => 'required',
+                'employee_firstname' => ['required', 'regex:/^[a-zA-Z]+$/'],
+                'employee_middlename' => ['nullable', 'regex:/^[a-zA-Z]+$/'],
+                'employee_lastname' => ['required', 'regex:/^[a-zA-Z]+$/'],
                 'employee_code' => [
                     'required',
                     Rule::unique('employee_details')->where(function ($query) {
@@ -228,18 +229,24 @@ class EmployeeDetailsController extends Controller
                     }),
                 ],
                 'employement_type' => 'required',
-                'relevantexp' => 'required|integer|min:0',
-                'totalexp' => 'required|integer|min:0',
+                'relevantexp' => 'required|numeric|min:0',
+                'totalexp' => ['required', 'numeric', new TotalExperienceRule($request->relevantexp)],
                 'location' => 'required',
-                'startdate' => 'required',
+                'startdate' => 'required|date|before_or_equal:today',
                 'enddate' => 'nullable',
-                'resumelink' => 'required|mimes:pdf|max:2048',
+                'resumelink' => 'required|mimes:pdf,doc,docx|max:2048',
                 'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'isactive' => 'required|boolean',
             ];
 
+            $messages = [
+                'employee_firstname.regex' => 'First name can only contain letters.',
+                'employee_middlename.regex' => 'Middle name can only contain letters.',
+                'employee_lastname.regex' => 'Last name can only contain letters.',
+            ];
+
             // Validate the request data
-            $validator = Validator::make($request->all(), $rules);
+            $validator = Validator::make($request->all(), $rules, $messages);
 
             // Check if validation fails
             if ($validator->fails()) {
@@ -331,23 +338,29 @@ class EmployeeDetailsController extends Controller
             $employee = EmployeeDetails::where(['employee_id' => $employeeId, 'deleted_at' => null])->first();
 
             $rules = [
-                'employee_firstname' => 'required',
-                'employee_middlename' => 'nullable',
-                'employee_lastname' => 'required',
+                'employee_firstname' => ['required', 'regex:/^[a-zA-Z]+$/'],
+                'employee_middlename' => ['nullable', 'regex:/^[a-zA-Z]+$/'],
+                'employee_lastname' => ['required', 'regex:/^[a-zA-Z]+$/'],
                 'employee_code' => 'required',
                 'employement_type' => 'required',
-                'relevantexp' => 'required|integer|min:0',
-                'totalexp' => 'required|integer|min:0',
+                'relevantexp' => 'required|numeric|min:0',
+                'totalexp' => ['required', 'numeric', new TotalExperienceRule($request->relevantexp)],
                 'location' => 'required',
-                'startdate' => 'required',
+                'startdate' => 'required|date|before_or_equal:today',
                 'enddate' => 'nullable',
-                'resumelink' => 'required',
-                'employee_image' => 'required',
+                'resumelink' => 'required|mimes:pdf,doc,docx|max:2048',
+                'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'isactive' => 'required|boolean',
             ];
 
+            $messages = [
+                'employee_firstname.regex' => 'First name can only contain letters.',
+                'employee_middlename.regex' => 'Middle name can only contain letters.',
+                'employee_lastname.regex' => 'Last name can only contain letters.',
+            ];
+
             // Validate the request data
-            $validator = Validator::make($request->all(), $rules);
+            $validator = Validator::make($request->all(), $rules, $messages);
 
             // If validation fails, return error response
             if ($validator->fails()) {
@@ -414,7 +427,7 @@ class EmployeeDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function removeEmployeeDetail(Request $request,$id)
+    public function removeEmployeeDetail(Request $request, $id)
     {
         try {
             // Find employee by employee ID column

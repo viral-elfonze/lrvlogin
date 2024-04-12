@@ -107,7 +107,7 @@ class EmployeeSkillMatrixController extends Controller
                     })->where('deleted_at', null),
                 ],
                 'employee_id' => 'required|exists:employee_details,employee_id',
-                'relevantexp' => 'required|integer|min:0',
+                'relevantexp' => 'required|numeric|min:0',
                 'competency' => 'required',
                 'is_certificate' => 'boolean',
                 'certificate' => 'array',
@@ -187,7 +187,7 @@ class EmployeeSkillMatrixController extends Controller
             $rules = [
                 'skill_id' => 'required', 'exists:skills,skill_id',
                 'employee_id' => 'required|exists:employee_details,employee_id',
-                'relevantexp' => 'required|integer|min:0',
+                'relevantexp' => 'required|numeric|min:0',
                 'competency' => 'required',
                 'is_certificate' => 'boolean',
                 'certificate' => 'array',
