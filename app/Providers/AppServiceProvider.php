@@ -25,17 +25,17 @@ class AppServiceProvider extends ServiceProvider
             $parts = explode('.', $value);
             
             // Check if the value has both integer and decimal parts
-            if (count($parts) != 2) {
-                return false;
-            }
+            // if (count($parts) != 2) {
+            //     return false;
+            // }
     
             // Check if the integer part is less than or equal to the provided maximum
-            if ($parts[0] > $parameters[0]) {
-                return false;
-            }
-    
+            // if ($parts[0] > $parameters[0]) {
+            //     return false;
+            // }
+             
             // Check if the decimal part is less than or equal to 11
-            if ($parts[1] > 11) {
+            if (isset($parts[1]) && $parts[1] > 11) {
                 return false;
             }
     
