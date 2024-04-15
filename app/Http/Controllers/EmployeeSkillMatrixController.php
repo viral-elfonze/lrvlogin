@@ -107,14 +107,17 @@ class EmployeeSkillMatrixController extends Controller
                     })->where('deleted_at', null),
                 ],
                 'employee_id' => 'required|exists:employee_details,employee_id',
-                'relevantexp' => 'required|numeric|min:0',
+                'relevantexp' => 'required|numeric|min:0||max_decimal:experience',
                 'competency' => 'required',
                 'is_certificate' => 'boolean',
                 'certificate' => 'array',
             ];
 
+            $messages = [
+                'relevantexp.max_decimal' => 'Experiance must between 1 to 11 months in decimal'
+            ];
             // Validate the request data
-            $validator = Validator::make($request->all(), $rules);
+            $validator = Validator::make($request->all(), $rules,$messages);
 
             // If validation fails, return error response
             if ($validator->fails()) {
@@ -187,14 +190,17 @@ class EmployeeSkillMatrixController extends Controller
             $rules = [
                 'skill_id' => 'required', 'exists:skills,skill_id',
                 'employee_id' => 'required|exists:employee_details,employee_id',
-                'relevantexp' => 'required|numeric|min:0',
+                'relevantexp' => 'required|numeric|min:0|max_decimal:experience',
                 'competency' => 'required',
                 'is_certificate' => 'boolean',
                 'certificate' => 'array',
             ];
+            $messages = [
+                'relevantexp.max_decimal' => 'Experiance must between 1 to 11 months in decimal'
+            ];
 
             // Validate the request data
-            $validator = Validator::make($request->all(), $rules);
+            $validator = Validator::make($request->all(), $rules,$messages);
 
             // If validation fails, return error response
             if ($validator->fails()) {

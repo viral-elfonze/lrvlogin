@@ -229,13 +229,13 @@ class EmployeeDetailsController extends Controller
                     }),
                 ],
                 'employement_type' => 'required',
-                'relevantexp' => 'required|numeric|min:0',
-                'totalexp' => ['required', 'numeric', new TotalExperienceRule($request->relevantexp)],
+                'relevantexp' => 'required|numeric|min:0|max_decimal:experience',
+                'totalexp' => 'required|numeric|gte:relevantexp|max_decimal:experience',
                 'location' => 'required',
                 'startdate' => 'required|date|before_or_equal:today',
                 'enddate' => 'nullable',
-                'resumelink' => 'required|mimes:pdf,doc,docx|max:2048',
-                'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'resumeLink' => 'nullable|file|max:2048|mimes:pdf,doc,docx',
+                'employee_image' => 'nullable|file|max:2048|mimes:jpeg,png,jpg,gif',
                 'isactive' => 'required|boolean',
             ];
 
@@ -243,6 +243,8 @@ class EmployeeDetailsController extends Controller
                 'employee_firstname.regex' => 'First name can only contain letters.',
                 'employee_middlename.regex' => 'Middle name can only contain letters.',
                 'employee_lastname.regex' => 'Last name can only contain letters.',
+                'relevantexp.max_decimal' => 'Relevant Experiance must between 1 to 11 months in decimal',
+                'totalexp.max_decimal' => 'Total Experiance must between 1 to 11 months in decimal'
             ];
 
             // Validate the request data
@@ -343,13 +345,14 @@ class EmployeeDetailsController extends Controller
                 'employee_lastname' => ['required', 'regex:/^[a-zA-Z]+$/'],
                 'employee_code' => 'required',
                 'employement_type' => 'required',
-                'relevantexp' => 'required|numeric|min:0',
-                'totalexp' => ['required', 'numeric', new TotalExperienceRule($request->relevantexp)],
+                'relevantexp' => 'required|numeric|min:0|max_decimal:experience',
+                'totalexp' => 'required|numeric|gte:relevantexp|max_decimal:experience',
                 'location' => 'required',
                 'startdate' => 'required|date|before_or_equal:today',
                 'enddate' => 'nullable',
-                'resumelink' => 'required|mimes:pdf,doc,docx|max:2048',
-                'employee_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                // 'employee_image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
+                'employee_image' => 'nullable|'.($request->hasFile('employee_image') ? 'image|max:2048|mimes:jpeg,png,jpg,gif' : ''),
+                'resumeLink' => 'nullable|file|max:2048|mimes:pdf,doc,docx',
                 'isactive' => 'required|boolean',
             ];
 
@@ -357,7 +360,10 @@ class EmployeeDetailsController extends Controller
                 'employee_firstname.regex' => 'First name can only contain letters.',
                 'employee_middlename.regex' => 'Middle name can only contain letters.',
                 'employee_lastname.regex' => 'Last name can only contain letters.',
+                'relevantexp.max_decimal' => 'Relevant Experiance must between 1 to 11 months in decimal',
+                'totalexp.max_decimal' => 'Total Experiance must between 1 to 11 months in decimal'
             ];
+            // dd($request->all());
 
             // Validate the request data
             $validator = Validator::make($request->all(), $rules, $messages);
@@ -383,8 +389,8 @@ class EmployeeDetailsController extends Controller
             $employee->employee_lastname = $request->input('employee_lastname');
             $employee->employee_code = $request->input('employee_code');
             $employee->employement_type = $request->input('employement_type');
-            $employee->relevantexp = $request->input('relevantexp');
-            $employee->totalexp = $request->input('totalexp');
+            $employee->relevantexp = $request->input('relevantexp')?number_format($request->input('relevantexp'), 2):0;
+            $employee->totalexp = $request->input('totalexp')?number_format($request->input('totalexp'), 2):0;
             $employee->location = $request->input('location');
             $employee->startdate = $request->input('startdate');
             $employee->enddate = $request->input('enddate');
@@ -415,7 +421,7 @@ class EmployeeDetailsController extends Controller
             $employee->update();
 
             // Return success response
-            return response()->json(['status' => 'error', 'message' => 'Employee details updated successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Employee details updated successfully']);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
