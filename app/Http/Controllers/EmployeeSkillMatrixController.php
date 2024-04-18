@@ -107,14 +107,15 @@ class EmployeeSkillMatrixController extends Controller
                     })->where('deleted_at', null),
                 ],
                 'employee_id' => 'required|exists:employee_details,employee_id',
-                'relevantexp' => 'required|numeric|min:0||max_decimal:experience',
+                'relevantexp' => 'required|numeric|min:0||max_decimal:experience|lt_total_experiance:'.$request->input('employee_id'),
                 'competency' => 'required',
                 'is_certificate' => 'boolean',
                 'certificate' => 'array',
             ];
 
             $messages = [
-                'relevantexp.max_decimal' => 'Experiance must between 1 to 11 months in decimal'
+                'relevantexp.max_decimal' => 'Experiance must between 1 to 11 months in decimal',
+                'relevantexp.lt_total_experiance'=>'Relavant Experince must be less then Employee\'s Total experiance'
             ];
             // Validate the request data
             $validator = Validator::make($request->all(), $rules,$messages);
@@ -190,13 +191,14 @@ class EmployeeSkillMatrixController extends Controller
             $rules = [
                 'skill_id' => 'required', 'exists:skills,skill_id',
                 'employee_id' => 'required|exists:employee_details,employee_id',
-                'relevantexp' => 'required|numeric|min:0|max_decimal:experience',
+                'relevantexp' => 'required|numeric|min:0|max_decimal:experience|lt_total_experiance:'.$request->input('employee_id'),
                 'competency' => 'required',
                 'is_certificate' => 'boolean',
                 'certificate' => 'array',
             ];
             $messages = [
-                'relevantexp.max_decimal' => 'Experiance must between 1 to 11 months in decimal'
+                'relevantexp.max_decimal' => 'Experiance must between 1 to 11 months in decimal',
+                'relevantexp.lt_total_experiance'=>'Relavant Experince must be less then Employee\'s Total experiance'
             ];
 
             // Validate the request data

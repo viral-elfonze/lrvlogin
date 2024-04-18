@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\EmployeeDetails;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
@@ -39,6 +40,40 @@ class AppServiceProvider extends ServiceProvider
                 return false;
             }
     
+            return true;
+        });
+        Validator::extend('lt_total_experiance', function ($attribute, $value, $parameters, $validator) {
+            // Split the value to get the integer and decimal parts
+            // $parts = explode('.', $value);
+            // dump($attribute);
+            // dump($value);
+            // dump($parameters[0]);
+            $rtnValidation = true;
+            $temp = EmployeeDetails::where('totalExp','>',$value)->where('employee_id',$parameters[0])->count();
+            return  $temp>0?true:false;
+            // dump($temp);
+            // $temp = EmployeeDetails::where('totalExp','>',2)->where('employee_id',$parameters[0])->count();
+            // dump($temp);
+            
+            // return true;
+            // dump($validator->data['employee_id']);
+            // dd();   
+
+            // Check if the value has both integer and decimal parts
+            // if (count($parts) != 2) {
+            //     return false;
+            // }
+
+            // Check if the integer part is less than or equal to the provided maximum
+            // if ($parts[0] > $parameters[0]) {
+            //     return false;
+            // }
+
+            // Check if the decimal part is less than or equal to 11
+            if (isset($parts[1]) && $parts[1] > 11) {
+                return false;
+            }
+
             return true;
         });
     }

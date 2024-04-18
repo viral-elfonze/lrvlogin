@@ -219,9 +219,9 @@ class EmployeeDetailsController extends Controller
             $savedResume = '';
 
             $rules = [
-                'employee_firstname' => ['required', 'regex:/^[a-zA-Z]+$/'],
-                'employee_middlename' => ['nullable', 'regex:/^[a-zA-Z]+$/'],
-                'employee_lastname' => ['required', 'regex:/^[a-zA-Z]+$/'],
+                'employee_firstname' => ['required', 'regex:/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/','max:250'],
+                'employee_middlename' => ['nullable', 'regex:/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/','max:250'],
+                'employee_lastname' => ['required', 'regex:/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/','max:250'],
                 'employee_code' => [
                     'required',
                     Rule::unique('employee_details')->where(function ($query) {
@@ -240,11 +240,15 @@ class EmployeeDetailsController extends Controller
             ];
 
             $messages = [
-                'employee_firstname.regex' => 'First name can only contain letters.',
-                'employee_middlename.regex' => 'Middle name can only contain letters.',
-                'employee_lastname.regex' => 'Last name can only contain letters.',
+                'employee_firstname.regex' => 'First name can only contain letters and space.',
+                'employee_middlename.regex' => 'Middle name can only contain letters and space.',
+                'employee_lastname.regex' => 'Last name can only contain letters and space.',
                 'relevantexp.max_decimal' => 'Relevant Experiance must between 1 to 11 months in decimal',
-                'totalexp.max_decimal' => 'Total Experiance must between 1 to 11 months in decimal'
+                'totalexp.max_decimal' => 'Total Experiance must between 1 to 11 months in decimal',
+                'employee_image.max' => 'Image must be less than 2MB',
+                'employee_image.mimes' => 'Image must be a file of type: jpeg, png, jpg, gif.',
+                'resumeLink.max' => 'Resume must be less than 2MB',
+                'resumeLink.mimes' => 'Resume must be a file of type: pdf, doc, docx.', 
             ];
 
             // Validate the request data
@@ -340,9 +344,9 @@ class EmployeeDetailsController extends Controller
             $employee = EmployeeDetails::where(['employee_id' => $employeeId, 'deleted_at' => null])->first();
 
             $rules = [
-                'employee_firstname' => ['required', 'regex:/^[a-zA-Z]+$/'],
-                'employee_middlename' => ['nullable', 'regex:/^[a-zA-Z]+$/'],
-                'employee_lastname' => ['required', 'regex:/^[a-zA-Z]+$/'],
+                'employee_firstname' => ['required', 'regex:/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/','max:250'],
+                'employee_middlename' => ['nullable', 'regex:/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/','max:250'],
+                'employee_lastname' => ['required', 'regex:/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/','max:250'],
                 'employee_code' => 'required',
                 'employement_type' => 'required',
                 'relevantexp' => 'required|numeric|min:0|max_decimal:experience',
@@ -357,11 +361,15 @@ class EmployeeDetailsController extends Controller
             ];
 
             $messages = [
-                'employee_firstname.regex' => 'First name can only contain letters.',
-                'employee_middlename.regex' => 'Middle name can only contain letters.',
-                'employee_lastname.regex' => 'Last name can only contain letters.',
+                'employee_firstname.regex' => 'First name can only contain letters and space.',
+                'employee_middlename.regex' => 'Middle name can only contain letters and space.',
+                'employee_lastname.regex' => 'Last name can only contain letters and space.',
                 'relevantexp.max_decimal' => 'Relevant Experiance must between 1 to 11 months in decimal',
-                'totalexp.max_decimal' => 'Total Experiance must between 1 to 11 months in decimal'
+                'totalexp.max_decimal' => 'Total Experiance must between 1 to 11 months in decimal',
+                'employee_image.max' => 'Image must be less than 2MB',
+                'employee_image.mimes' => 'Image must be a file of type: jpeg, png, jpg, gif.',
+                'resumeLink.max' => 'Resume must be less than 2MB',
+                'resumeLink.mimes' => 'Resume must be a file of type: pdf, doc, docx.',
             ];
             // dd($request->all());
 
